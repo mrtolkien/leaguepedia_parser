@@ -25,3 +25,10 @@ games = lp.get_games(tournaments[0]['name'])
 # Gets picks and bans for a game. Get the game object from get_games()
 lp.get_picks_bans(games[0])
 ```
+
+# river_mwclient
+
+If you installed `river_mwclient`, the `LeaguepediaParser` class will inherit from its `EsportsClient` class.
+
+If not, it
+will simply be a wrapper for `mwclient`.
