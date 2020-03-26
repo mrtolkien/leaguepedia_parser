@@ -59,3 +59,16 @@ class TestLeaguepediaParser(TestCase):
             game['team1_picks'] = 'BUG'
             with self.assertRaises(Exception):
                 lp.get_picks_bans(game)
+
+    def test_get_long_team_name(self):
+        lp = LeaguepediaParser()
+
+        self.assertEqual(lp.get_long_team_name('tsm'), 'Team SoloMid')
+        self.assertEqual(lp.get_long_team_name('IG'), 'Invictus Gaming')
+        self.assertIsNone(lp.get_long_team_name('mister mv'))
+
+    def test_get_team_logo(self):
+        lp = LeaguepediaParser()
+
+        self.assertIsNotNone(lp.get_team_logo('T1'))
+        self.assertIsNotNone(lp.get_team_logo('G2 Esports'))

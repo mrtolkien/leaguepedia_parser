@@ -184,12 +184,14 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         except KeyError:
             return self._get_picks_bans_through_champions(game)
 
-    def get_team_logo(self, team_name):
+    def get_team_logo(self, team_name: str, retry=True) -> str:
         """
         Returns the URL with the team’s logo.
 
         :param team_name
                     Team name, usually gotten from the game dictionary.
+        :param retry
+                    If True, the function will try to use get_long_team_name if the name isn’t understood.
         :return:
                     URL pointing to the team’s logo
         """
@@ -199,11 +201,33 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
                                  titles=u'File:{}logo square.png'.format(team_name),
                                  iiprop='url')
 
-        url = None
-        pages = result.get('query').get('pages')
-        for k, v in pages.items():
-            url = v.get('imageinfo')[0].get('url')
+        try:
+            url = None
+            pages = result.get('query').get('pages')
+            for k, v in pages.items():
+                url = v.get('imageinfo')[0].get('url')
+        except (TypeError, AttributeError):
+            # This happens when the team name was not properly understood.
+            if river_mwclient_loaded and retry:
+                return self.get_team_logo(self.get_long_team_name(team_name), False)
+            else:
+                raise Exception('Logo not found for the given team name')
         return url
+
+    def get_long_team_name(self, team_abbreviation: str) -> str:
+        """
+        Returns the long team name for the given team abbreviation, using Leaguepedia’s search pages.
+
+        Only issues a query the first time it is called, then stores the data in its cache.
+
+        :param team_abbreviation:
+                    A team name abbreviation, like IG or RNG
+        :return:
+                    The long team name, like "Invictus Gaming", "Royal Never Give Up", ...
+        """
+        if not river_mwclient_loaded:
+            raise Exception('This features requires river_mwclient')
+        return self.cache.get('Team', team_abbreviation, 'long')
 
     def _load_tournament_picks_bans(self, overview_page, **kwargs):
         self.picks_bans_dict[overview_page] = \
