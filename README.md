@@ -1,8 +1,7 @@
 # leaguepedia_parser
 A parser for the Leaguepedia website, focused on accessing esports data.
 
-Possible future functionality includes direct querying for games from team names, fuzzy matching for tournament names, 
-and so on and so forth.
+Possible future functionality includes  direct querying for games from team names, fuzzy matching for tournament names, .... Any help is welcome, I am currently only adding features that I use on my projects.
 
 # Install
 `pip install leaguepedia_parser`
