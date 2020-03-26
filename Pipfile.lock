@@ -1,0 +1,112 @@
+{
+    "_meta": {
+        "hash": {
+            "sha256": "66ccf36f7639cd978acc8edc68955b1ed5b2e845d9ae682ab9d7bbe768d5c1a2"
+        },
+        "pipfile-spec": 6,
+        "requires": {
+            "python_version": "3.8"
+        },
+        "sources": [
+            {
+                "name": "pypi",
+                "url": "https://pypi.org/simple",
+                "verify_ssl": true
+            }
+        ]
+    },
+    "default": {
+        "certifi": {
+            "hashes": [
+                "sha256:017c25db2a153ce562900032d5bc68e9f191e44e9a0f762f373977de9df1fbb3",
+                "sha256:25b64c7da4cd7479594d035c08c2d809eb4aab3a26e5a990ea98cc450c320f1f"
+            ],
+            "version": "==2019.11.28"
+        },
+        "chardet": {
+            "hashes": [
+                "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae",
+                "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"
+            ],
+            "version": "==3.0.4"
+        },
+        "idna": {
+            "hashes": [
+                "sha256:7588d1c14ae4c77d74036e8c22ff447b26d0fde8f007354fd48a7814db15b7cb",
+                "sha256:a068a21ceac8a4d63dbfd964670474107f541babbd2250d61922f029858365fa"
+            ],
+            "version": "==2.9"
+        },
+        "mwclient": {
+            "hashes": [
+                "sha256:c3f1598a5f75fb80e9b8373f6574042208358aed81470fc2178a8ae7474069af",
+                "sha256:dbb695bfd11f024073f56c1c472573013a1f67bb812a25f1412472faf49188ad"
+            ],
+            "version": "==0.10.0"
+        },
+        "mwparserfromhell": {
+            "hashes": [
+                "sha256:049b4de541f0e03c0d9b745e9482fcd72637661ac8af7f924a7005bd46a4e551",
+                "sha256:2df9222bc5fc8f82ad68a3dd06ee38bde47eff521c4315b32523938ed834c3a4",
+                "sha256:301e7742c769be6a2dedc287be2ca6724b5e85ed6aadc788fc2ba0a17d11f509",
+                "sha256:6377696e0fe0e12bdf9b94eeb2625edd3f30e373c72c593986c85eba60184575",
+                "sha256:696381fb96682a37655a8dfc35393d60433622e65618fd9e003cc81cb6e10554",
+                "sha256:78cf0686ea762ff06ede4d52af05abc9981fba881d8d6f1325d6b34fe3e5d295",
+                "sha256:aaf5416ab9b75e99e286f8a4216f77a2f7d834afd4c8f81731e701e59bf99305",
+                "sha256:b101d457343c948588de5c292267b273de7632227a47e564e5ab80a3b10c4df3",
+                "sha256:dda8bc7807b5b77acebc5ea0699f0c95ca9a8d8151a36a2121d6affcfcdfcf87",
+                "sha256:e1419c058cd4f644cc58af9ea13304d415d6d282a7b64beb5226ee3c25eb2cbf",
+                "sha256:fb7000b444d11f850992dc7cb31c1d89fa544a28ab7f983a8aca3af29af5ea00"
+            ],
+            "version": "==0.5.4"
+        },
+        "oauthlib": {
+            "hashes": [
+                "sha256:bee41cc35fcca6e988463cacc3bcb8a96224f470ca547e697b604cc697b2f889",
+                "sha256:df884cd6cbe20e32633f1db1072e9356f53638e4361bef4e8b03c9127c9328ea"
+            ],
+            "version": "==3.1.0"
+        },
+        "pytz": {
+            "hashes": [
+                "sha256:1c557d7d0e871de1f5ccd5833f60fb2550652da6be2693c1e02300743d21500d",
+                "sha256:b02c06db6cf09c12dd25137e563b31700d3b80fcc4ad23abb7a315f2789819be"
+            ],
+            "version": "==2019.3"
+        },
+        "requests": {
+            "hashes": [
+                "sha256:43999036bfa82904b6af1d99e4882b560e5e2c68e5c4b0aa03b655f3d7d73fee",
+                "sha256:b3f43d496c6daba4493e7c431722aeb7dbc6288f52a6e04e7b6023b0247817e6"
+            ],
+            "version": "==2.23.0"
+        },
+        "requests-oauthlib": {
+            "hashes": [
+                "sha256:7f71572defaecd16372f9006f33c2ec8c077c3cfa6f5911a9a90202beb513f3d",
+                "sha256:b4261601a71fd721a8bd6d7aa1cc1d6a8a93b4a9f5e96626f8e4d91e8beeaa6a"
+            ],
+            "version": "==1.3.0"
+        },
+        "river-mwclient": {
+            "editable": true,
+            "git": "https://github.com/RheingoldRiver/river_mwclient.git",
+            "ref": "27bd9b70e7986220e66625b9b5f1451dbb891857"
+        },
+        "six": {
+            "hashes": [
+                "sha256:236bdbdce46e6e6a3d61a337c0f8b763ca1e8717c03b369e87a7ec7ce1319c0a",
+                "sha256:8f3cd2e254d8f793e7f3d6d9df77b92252b52637291d0f0da013c76ea2724b6c"
+            ],
+            "version": "==1.14.0"
+        },
+        "urllib3": {
+            "hashes": [
+                "sha256:2f3db8b19923a873b3e5256dc9c2dedfa883e33d87c690d9c7913e1f40673cdc",
+                "sha256:87716c2d2a7121198ebcb7ce7cccf6ce5e9ba539041cfbaeecfb641dc0bf6acc"
+            ],
+            "version": "==1.25.8"
+        }
+    },
+    "develop": {}
+}
