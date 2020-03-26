@@ -1,0 +1,287 @@
+from typing import List
+import sys
+
+try:
+    from river_mwclient.esports_client import EsportsClient
+except ModuleNotFoundError:
+    import mwclient
+
+river_mwclient_loaded = True if 'river_mwclient' in sys.modules else False
+
+
+class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
+    """
+    Simple esports-oriented parser for the Leaguepedia API
+
+    Full documentation: https://lol.gamepedia.com/Help:API_Documentation
+    """
+
+    def __init__(self,
+                 get_full_results: bool = False,
+                 **kwarg):
+        # This class is made to interact only with the LoL wiki
+        if river_mwclient_loaded:
+            super().__init__('lol', **kwarg)
+            self.query = self.cargo_client.query
+        else:
+            self.client = mwclient.Site('lol.gamepedia.com', path='/', **kwarg)
+            self.query = lambda **kwargs: [row['title'] for row in
+                                           self.client.api('cargoquery', **kwargs)['cargoquery']]
+
+        # If this is True the parser will automatically issue multiple queries if the answer is over 500 rows.
+        self.get_full_results = get_full_results
+
+        # leaguepedia_game_id is the field called ScoreboardID_Wiki in ScoreboardGame
+        # picks_bans_dict[tournament_name][leaguepedia_game_id] = {pick_bans}
+        self.picks_bans_dict = {}
+
+    def _cargoquery(self, **kwargs):
+        if 'limit' in kwargs:
+            limit = kwargs.pop('limit')
+        else:
+            limit = self.client.api_limit
+
+        result = self.query(**kwargs, limit=limit)
+
+        # Kinda wish Python had a do while loop, would like to cleanup the code duplication here.
+        while self.get_full_results and result and result.__len__() % limit == 0:
+            result += self.query(**kwargs, limit=limit, offset=result.__len__())
+
+        return result
+
+    def get_tournament_regions(self) -> List[str]:
+        """
+        Returns a list of all region names that appear in the Tournaments table.
+
+        Issues one query.
+
+        :return:    The list of all region names
+        """
+        regions_dicts_list = self._cargoquery(tables='Tournaments',
+                                              fields='Region',
+                                              group_by='Region')
+
+        return [row['Region'] for row in regions_dicts_list]
+
+    def get_tournaments(self,
+                        region: str = None,
+                        year: int = None,
+                        tournament_level: str = 'Primary',
+                        is_playoffs: bool = None,
+                        **kwargs) -> List[dict]:
+        """
+        Returns a list of tournament dictionaries.
+        Notable keys include 'name', 'region', 'league', 'date_start', and 'date_end'.
+
+        Issues one query per 500 rows.
+
+        :param region
+                    Recommended to get it from get_tournament_regions().
+        :param year
+                    Year to filter on. Defaults to None.
+        :param tournament_level
+                    Can be Primary, Secondary, Major, Secondary, Showmatch. Defaults to Primary.
+        :param is_playoffs
+                    Can be used to filter between playoffs and regular season tournaments.
+        :return:
+                    A list of tournaments dictionaries.
+        """
+        # We need to cast is_playoffs as an integer for the cargoquery
+        if is_playoffs is not None:
+            is_playoffs = 1 if is_playoffs else 0
+
+        # This generated the WHERE part of the cargoquery
+        where_string = ''.join([" AND Tournaments.{}='{}'".format(field_name, value) for field_name, value in
+                                [('Region', region),
+                                 ('Year', year),
+                                 ('TournamentLevel', tournament_level),
+                                 ('IsPlayoffs', is_playoffs)] if value is not None])[5:]  # Cutting the leading AND
+
+        return self._cargoquery(tables='Tournaments',
+                                fields='Name = name, '
+                                       'DateStart = date_start, '
+                                       'Date = date_end, '
+                                       'Region = region, '
+                                       'League = league, '
+                                       'Rulebook = rulebook, '
+                                       'TournamentLevel = tournament_level, '
+                                       'IsQualifier = is_qualifier, '
+                                       'IsPlayoffs = is_playoffs, '
+                                       'IsOfficial = is_official, '
+                                       'OverviewPage = overview_page',
+                                order_by="Tournaments.DateStart",
+                                where=where_string,
+                                **kwargs)
+
+    def get_games(self, tournament_name=None, **kwargs):
+        """
+        Returns the list of games played in a tournament.
+        Notable keys include 'leaguepedia_game_id', 'winner', 'date_time_utc', 'match_history_url', 'vod_url'.
+
+        :param tournament_name
+                    Name of the tournament, which can be gotten from get_tournaments().
+        :return:
+                    A list of game dictionaries.
+        """
+        return self._cargoquery(tables='ScoreboardGame',
+                                fields='Tournament = tournament, '
+                                       'Team1 = team1, '
+                                       'Team2 = team2, '
+                                       'Winner = winner, '
+                                       'DateTime_UTC = date_time_utc, '
+                                       'DST = dst, '
+                                       'Team1Score = team1_match_score, '
+                                       'Team2Score = team2_match_score, '
+                                       'Team1Bans = team1_bans, '
+                                       'Team2Bans = team2_bans, '
+                                       'Team1Picks = team1_picks, '
+                                       'Team2Picks = team2_picks, '
+                                       'Team1Names = team1_names, '
+                                       'Team2Names = team2_names, '
+                                       'Team1Links = team1_links, '
+                                       'Team2Links = team2_links, '
+                                       'Team1Dragons = team1_dragons, '
+                                       'Team2Dragons = team2_dragons, '
+                                       'Team1Barons = team1_barons, '
+                                       'Team2Barons = team2_barons, '
+                                       'Team1Towers = team1_towers, '
+                                       'Team2Towers = team2_towers, '
+                                       'Team1Gold = team1_gold, '
+                                       'Team2Gold = team2_gold, '
+                                       'Team1Kills = team1_kills, '
+                                       'Team2Kills = team2_kills, '
+                                       'Team1RiftHeralds = team1_rift_heralds, '
+                                       'Team2RiftHeralds = team2_rift_heralds, '
+                                       'Team1Inhibitors = team1_inhibitors, '
+                                       'Team2Inhibitors = team2_inhibitors, '
+                                       'Patch = patch, '
+                                       'MatchHistory = match_history_url, '
+                                       'VOD = vod_url, '
+                                       'Gamename = game_in_match, '
+                                       'OverviewPage = overview_page, '
+                                       'ScoreboardID_Wiki = leaguepedia_game_id, ',
+                                where="ScoreboardGame.Tournament='{}'".format(tournament_name),
+                                **kwargs)
+
+    def get_picks_bans(self, game, **kwargs):
+        """
+        Returns the picks and bans for a game.
+
+        Only issues a query if picks and bans for the tournament have not been loaded yet.
+
+        :param game
+                    Game dictionary, coming from get_games()
+        :return:
+                    The picks and bans dictionary, matched on ScoreboardGame/ScoreboardID_Wiki and PicksAndBansS7/GameID_Wiki
+        """
+        overview_page = game['overview_page']
+        if overview_page not in self.picks_bans_dict:
+            self._load_tournament_picks_bans(overview_page, **kwargs)
+
+        try:
+            return self.picks_bans_dict[overview_page][game['leaguepedia_game_id']]
+        except KeyError:
+            return self._get_picks_bans_through_champions(game)
+
+    def get_team_logo(self, team_name):
+        """
+        Returns the URL with the team’s logo.
+
+        :param team_name
+                    Team name, usually gotten from the game dictionary.
+        :return:
+                    URL pointing to the team’s logo
+        """
+        result = self.client.api(action='query',
+                                 format='json',
+                                 prop='imageinfo',
+                                 titles=u'File:{}logo square.png'.format(team_name),
+                                 iiprop='url')
+
+        url = None
+        pages = result.get('query').get('pages')
+        for k, v in pages.items():
+            url = v.get('imageinfo')[0].get('url')
+        return url
+
+    def _load_tournament_picks_bans(self, overview_page, **kwargs):
+        self.picks_bans_dict[overview_page] = \
+            {pb['leaguepedia_game_id']: pb for pb in
+             self._cargoquery(tables='PicksAndBansS7',
+                              fields='Team1Role1 = team1_role1, '
+                                     'Team1Role2 = team1_role2, '
+                                     'Team1Role3 = team1_role3, '
+                                     'Team1Role4 = team1_role4, '
+                                     'Team1Role5 = team1_role5, '
+                                     'Team2Role1 = team2_role1, '
+                                     'Team2Role2 = team2_role2, '
+                                     'Team2Role3 = team2_role3, '
+                                     'Team2Role4 = team2_role4, '
+                                     'Team2Role5 = team2_role5, '
+                                     'Team1Ban1 = team1_ban1, '
+                                     'Team1Ban2 = team1_ban2, '
+                                     'Team1Ban3 = team1_ban3, '
+                                     'Team1Ban4 = team1_ban4, '
+                                     'Team1Ban5 = team1_ban5, '
+                                     'Team1Pick1 = team1_pick1, '
+                                     'Team1Pick2 = team1_pick2, '
+                                     'Team1Pick3 = team1_pick3, '
+                                     'Team1Pick4 = team1_pick4, '
+                                     'Team1Pick5 = team1_pick5, '
+                                     'Team2Ban1 = team2_ban1, '
+                                     'Team2Ban2 = team2_ban2, '
+                                     'Team2Ban3 = team2_ban3, '
+                                     'Team2Ban4 = team2_ban4, '
+                                     'Team2Ban5 = team2_ban5, '
+                                     'Team2Pick1 = team2_pick1, '
+                                     'Team2Pick2 = team2_pick2, '
+                                     'Team2Pick3 = team2_pick3, '
+                                     'Team2Pick4 = team2_pick4, '
+                                     'Team2Pick5 = team2_pick5, '
+                                     'Team1 = team1, '
+                                     'Team2 = team2, '
+                                     'Winner = winner, '
+                                     'Team1Score = team1_score, '
+                                     'Team2Score = team2_score, '
+                                     'OverviewPage = overview_page, '
+                                     'Phase = phase, '
+                                     'UniqueLine = unique_line, '
+                                     'Tab = tab, '
+                                     'N_Page = n__page, '
+                                     'N_TabInPage = n__tab_in_page, '
+                                     'N_MatchInPage = n__match_in_page, '
+                                     'N_GameInPage = n__game_in_page, '
+                                     'N_GameInMatch = n__game_in_match, '
+                                     'N_MatchInTab = n__match_in_tab, '
+                                     'N_GameInTab = n__game_in_tab, '
+                                     'GameID_Wiki = leaguepedia_game_id',
+                              where='OverviewPage="{}"'.format(overview_page),
+                              **kwargs)}
+
+    def _get_picks_bans_through_champions(self, game):
+        game_pb_list = [sorted(
+            ['None' if (x == '' or 'Loss' in x) else x
+             for x in game['team{}_{}'.format(team_id, pick_or_ban)].split(',')])
+            for team_id in [1, 2]
+            for pick_or_ban in ['picks', 'bans']]
+
+        # We simply look at all picks and bans and see if there was one with the same 20 champions and team names
+        matched_pb = []
+        for possible_pb in self.picks_bans_dict[game['overview_page']].values():
+            if not game['team1'] == possible_pb['team1'] and game['team2'] == possible_pb['team2']:
+                continue
+            possible_pb_list = [(sorted([
+                possible_pb.get('team{}_{}{}'.format(team_id, pick_or_ban, player_id))
+                for player_id in range(1, 6)]))
+                for team_id in [1, 2]
+                for pick_or_ban in ['pick', 'ban']]
+            if possible_pb_list == game_pb_list:
+                matched_pb.append(possible_pb)
+
+        # Raising an IndexError if no picks and bans were found
+        if matched_pb.__len__() == 1:
+            return matched_pb[0]
+        else:
+            raise Exception('Picks and bans could not be found for game {}'.format(game['leaguepedia_game_id']))
+
+##
