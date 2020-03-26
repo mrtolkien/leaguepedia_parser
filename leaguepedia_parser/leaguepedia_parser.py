@@ -109,7 +109,7 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
                                        'IsPlayoffs = is_playoffs, '
                                        'IsOfficial = is_official, '
                                        'OverviewPage = overview_page',
-                                order_by="Tournaments.DateStart",
+                                order_by="Tournaments.Date",
                                 where=where_string,
                                 **kwargs)
 
@@ -161,6 +161,7 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
                                        'OverviewPage = overview_page, '
                                        'ScoreboardID_Wiki = leaguepedia_game_id, ',
                                 where="ScoreboardGame.Tournament='{}'".format(tournament_name),
+                                order_by="ScoreboardGame.DateTime_UTC",
                                 **kwargs)
 
     def get_picks_bans(self, game, **kwargs):
