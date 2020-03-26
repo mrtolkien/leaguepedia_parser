@@ -24,7 +24,12 @@ games = lp.get_games(tournaments[0]['name'])
 
 # Gets picks and bans for a game. Get the game object from get_games()
 lp.get_picks_bans(games[0])
+
+# Gets the URL of the team’s logo
+lp.get_team_logo('T1')
 ```
+
+More usage examples can be found in the `_tests` folder where every function is tested at least once.
 
 # river_mwclient
 
