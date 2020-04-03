@@ -32,6 +32,10 @@ class TestLeaguepediaParser(TestCase):
             games = lp.get_games(tournament_name)
             self.assertGreater(games.__len__(), 0)
 
+        games_with_players = lp.get_games('LCK 2020 Spring', get_players=True)
+        for game in games_with_players:
+            self.assertIsNotNone(game['players'])
+
     def test_get_picks_bans(self):
         lp = LeaguepediaParser()
 
