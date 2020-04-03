@@ -32,7 +32,7 @@ class TestLeaguepediaParser(TestCase):
             games = lp.get_games(tournament_name)
             self.assertGreater(games.__len__(), 0)
 
-        games_with_players = lp.get_games('LCK 2020 Spring', get_players=True)
+        games_with_players = lp.get_games('KeSPA Cup 2019', get_players=True)
         for game in games_with_players:
             self.assertIsNotNone(game['players'])
 
@@ -93,3 +93,5 @@ class TestLeaguepediaParser(TestCase):
             "lp.get_players(['Faker', 'PERKZ'])",
             setup="import leaguepedia_parser\nlp=leaguepedia_parser.LeaguepediaParser()",
             number=10000), 2)
+
+        self.assertEqual(lp.get_player('XXNOOBLORDSLAYER69XX'), {})

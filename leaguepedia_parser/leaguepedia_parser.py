@@ -264,7 +264,7 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
                                     where="PlayerRedirects.AllName = '{}'".format(player_link),
                                     **kwargs)[0]
         except IndexError:
-            return None
+            return {}
 
     def get_players(self, player_links, **kwargs) -> dict:
         """
@@ -306,6 +306,7 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         #                                                       **kwargs)}
 
         for p in new_players:
+            # Necessary to handle None objects from get_player.
             new_players[p]['updated_at'] = datetime.datetime.now()
             results_dict[p] = new_players[p]
 
