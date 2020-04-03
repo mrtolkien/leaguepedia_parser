@@ -92,4 +92,4 @@ class TestLeaguepediaParser(TestCase):
         self.assertLess(timeit.timeit(
             "lp.get_players(['Faker', 'PERKZ'])",
             setup="import leaguepedia_parser\nlp=leaguepedia_parser.LeaguepediaParser()",
-            number=100000), 1)
+            number=10000), 2)

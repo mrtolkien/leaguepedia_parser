@@ -280,24 +280,27 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         if not missing_links:
             return results_dict
 
-        new_players = {p['link']: p for p in self._cargoquery(tables='Players, PlayerRedirects',
-                                                              join_on="Players._pageName = PlayerRedirects.OverviewPage",
-                                                              fields="PlayerRedirects.AllName = link, "
-                                                                     "Players.ID = game_name, "
-                                                                     "Players.Image = image,"
-                                                                     "Players.NameFull = real_name, "
-                                                                     "Players.Birthdate  = birthday, "
-                                                                     "Players.Team = team, "
-                                                                     "Players.Role = role, "
-                                                                     "Players.SoloqueueIds = account_names, "
-                                                                     "Players.Stream = stream, "
-                                                                     "Players.Twitter = twitter, "
-                                                                     "Players._pageName = page_name",
-                                                              where="PlayerRedirects.AllName = '" +
-                                                                    "' OR PlayerRedirects.AllName = '".join(
-                                                                        missing_links) +
-                                                                    "'",
-                                                              **kwargs)}
+        new_players = {link: self.get_player(link) for link in missing_links}
+
+        # TODO Find a way to make a single query while using the proper links
+        # new_players = {p['link']: p for p in self._cargoquery(tables='Players, PlayerRedirects',
+        #                                                       join_on="Players._pageName = PlayerRedirects.OverviewPage",
+        #                                                       fields="PlayerRedirects.AllName = link, "
+        #                                                              "Players.ID = game_name, "
+        #                                                              "Players.Image = image,"
+        #                                                              "Players.NameFull = real_name, "
+        #                                                              "Players.Birthdate  = birthday, "
+        #                                                              "Players.Team = team, "
+        #                                                              "Players.Role = role, "
+        #                                                              "Players.SoloqueueIds = account_names, "
+        #                                                              "Players.Stream = stream, "
+        #                                                              "Players.Twitter = twitter, "
+        #                                                              "Players._pageName = page_name",
+        #                                                       where="PlayerRedirects.AllName = '" +
+        #                                                             "' OR PlayerRedirects.AllName = '".join(
+        #                                                                 missing_links) +
+        #                                                             "'",
+        #                                                       **kwargs)}
 
         for p in new_players:
             new_players[p]['updated_at'] = datetime.datetime.now()
