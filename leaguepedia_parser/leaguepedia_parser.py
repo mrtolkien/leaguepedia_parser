@@ -251,6 +251,32 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
                                 where="PlayerRedirects.AllName = '{}'".format(player_link),
                                 **kwargs)[0]
 
+    def get_players(self, player_links, **kwargs) -> dict:
+        """
+        Returns the Player object from a list of player links.
+
+        :param player_links: a list of player links, coming from ScoreboardGame.TeamXLinks most likely
+        :return: a dict of player objects representing their current information with their link as the key
+        """
+
+        return {p['link']: p for p in self._cargoquery(tables='Players, PlayerRedirects',
+                                                       join_on="Players._pageName = PlayerRedirects._pageName",
+                                                       fields="PlayerRedirects.AllName = link, "
+                                                              "Players.ID = game_name, "
+                                                              "Players.Image = image,"
+                                                              "Players.NameFull = real_name, "
+                                                              "Players.Birthdate  = birthday, "
+                                                              "Players.Team = team, "
+                                                              "Players.Role = role, "
+                                                              "Players.SoloqueueIds = account_names, "
+                                                              "Players.Stream = stream, "
+                                                              "Players.Twitter = twitter, "
+                                                              "Players._pageName = page_name",
+                                                       where="PlayerRedirects.AllName = '" +
+                                                             "' OR PlayerRedirects.AllName = '".join(player_links) +
+                                                             "'",
+                                                       **kwargs)}
+
     def _load_tournament_picks_bans(self, overview_page, **kwargs):
         self.picks_bans_dict[overview_page] = \
             {pb['leaguepedia_game_id']: pb for pb in
