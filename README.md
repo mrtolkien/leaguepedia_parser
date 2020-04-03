@@ -26,6 +26,9 @@ lp.get_picks_bans(games[0])
 
 # Gets the URL of the team’s logo
 lp.get_team_logo('T1')
+
+# Get player’s info
+lp.get_player('Faker')
 ```
 
 More usage examples can be found in the `_tests` folder where every function is tested at least once.
