@@ -243,25 +243,28 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
 
     def get_player(self, player_link, **kwargs) -> dict:
         """
-        Returns the Player object from a player link.
+        Returns the Player object from a player link. Returns None if the player doesn't have a page.
 
         :param player_link: a player link , coming from ScoreboardGame.TeamXLinks or ScoreboardPlayer.Link for example
         :return: the player object representing its current information (including current player name)
         """
-        return self._cargoquery(tables='Players, PlayerRedirects',
-                                join_on="Players._pageName = PlayerRedirects.OverviewPage",
-                                fields="Players.ID = game_name, "
-                                       "Players.Image = image,"
-                                       "Players.NameFull = real_name, "
-                                       "Players.Birthdate  = birthday, "
-                                       "Players.Team = team, "
-                                       "Players.Role = role, "
-                                       "Players.SoloqueueIds = account_names, "
-                                       "Players.Stream = stream, "
-                                       "Players.Twitter = twitter, "
-                                       "Players._pageName = page_name",
-                                where="PlayerRedirects.AllName = '{}'".format(player_link),
-                                **kwargs)[0]
+        try:
+            return self._cargoquery(tables='Players, PlayerRedirects',
+                                    join_on="Players._pageName = PlayerRedirects.OverviewPage",
+                                    fields="Players.ID = game_name, "
+                                           "Players.Image = image,"
+                                           "Players.NameFull = real_name, "
+                                           "Players.Birthdate  = birthday, "
+                                           "Players.Team = team, "
+                                           "Players.Role = role, "
+                                           "Players.SoloqueueIds = account_names, "
+                                           "Players.Stream = stream, "
+                                           "Players.Twitter = twitter, "
+                                           "Players._pageName = page_name",
+                                    where="PlayerRedirects.AllName = '{}'".format(player_link),
+                                    **kwargs)[0]
+        except IndexError:
+            return None
 
     def get_players(self, player_links, **kwargs) -> dict:
         """
