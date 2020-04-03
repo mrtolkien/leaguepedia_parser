@@ -1,3 +1,4 @@
+import timeit
 from unittest import TestCase
 from leaguepedia_parser.leaguepedia_parser import LeaguepediaParser
 
@@ -73,7 +74,18 @@ class TestLeaguepediaParser(TestCase):
         self.assertIsNotNone(lp.get_team_logo('T1'))
         self.assertIsNotNone(lp.get_team_logo('G2 Esports'))
 
-    def test_player(self):
+    def test_get_player(self):
         lp = LeaguepediaParser()
 
         self.assertIsNotNone(lp.get_player('Faker')['real_name'])
+
+    def test_get_players(self):
+        lp = LeaguepediaParser()
+        players = lp.get_players(['Faker', 'PERKZ'])
+        self.assertIsNotNone(players)
+
+        # We try getting players 1000 times. If queries are cached properly, it should be way below 1s.
+        self.assertLess(timeit.timeit(
+            "lp.get_players(['Faker', 'PERKZ'])",
+            setup="import leaguepedia_parser\nlp=leaguepedia_parser.LeaguepediaParser()",
+            number=100000), 1)

@@ -7,7 +7,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setuptools.setup(
     name='leaguepedia_parser',
-    version='0.1.2',
+    version='0.2.0',
     packages=['leaguepedia_parser'],
     url='https://github.com/mrtolkien/leaguepedia_parser',
     license='MIT',

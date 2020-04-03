@@ -1,4 +1,5 @@
 from typing import List
+import datetime
 import sys
 
 try:
@@ -19,6 +20,9 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
     def __init__(self,
                  get_full_results: bool = False,
                  **kwarg):
+        # If this is True the parser will automatically issue multiple queries if the answer is over 500 rows.
+        self.get_full_results = get_full_results
+
         # This class is made to interact only with the LoL wiki
         if river_mwclient_loaded:
             super().__init__('lol', **kwarg)
@@ -28,12 +32,12 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
             self.query = lambda **kwargs: [row['title'] for row in
                                            self.client.api('cargoquery', **kwargs)['cargoquery']]
 
-        # If this is True the parser will automatically issue multiple queries if the answer is over 500 rows.
-        self.get_full_results = get_full_results
-
         # leaguepedia_game_id is the field called ScoreboardID_Wiki in ScoreboardGame
-        # picks_bans_dict[tournament_name][leaguepedia_game_id] = {pick_bans}
-        self.picks_bans_dict = {}
+        # picks_bans_cache[tournament_name][leaguepedia_game_id] = {pick_bans}
+        self.picks_bans_cache = {}
+
+        # players_cache[player_link] = {player, updated_at}
+        self.players_cache = {}
 
     def _cargoquery(self, **kwargs) -> list:
         if 'limit' in kwargs:
@@ -113,56 +117,64 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
                                 where=where_string,
                                 **kwargs)
 
-    def get_games(self, tournament_name=None, **kwargs) -> List[dict]:
+    def get_games(self, tournament_name=None, get_players=False, **kwargs) -> List[dict]:
         """
         Returns the list of games played in a tournament.
         Notable keys include 'leaguepedia_game_id', 'winner', 'date_time_utc', 'match_history_url', 'vod_url'.
 
         :param tournament_name
                     Name of the tournament, which can be gotten from get_tournaments().
+        :param get_players
+                    Also attaches a dictionary with player objects to every game.
         :return:
                     A list of game dictionaries.
         """
-        return self._cargoquery(tables='ScoreboardGame',
-                                fields='Tournament = tournament, '
-                                       'Team1 = team1, '
-                                       'Team2 = team2, '
-                                       'Winner = winner, '
-                                       'DateTime_UTC = date_time_utc, '
-                                       'DST = dst, '
-                                       'Team1Score = team1_match_score, '
-                                       'Team2Score = team2_match_score, '
-                                       'Team1Bans = team1_bans, '
-                                       'Team2Bans = team2_bans, '
-                                       'Team1Picks = team1_picks, '
-                                       'Team2Picks = team2_picks, '
-                                       'Team1Names = team1_names, '
-                                       'Team2Names = team2_names, '
-                                       'Team1Links = team1_links, '
-                                       'Team2Links = team2_links, '
-                                       'Team1Dragons = team1_dragons, '
-                                       'Team2Dragons = team2_dragons, '
-                                       'Team1Barons = team1_barons, '
-                                       'Team2Barons = team2_barons, '
-                                       'Team1Towers = team1_towers, '
-                                       'Team2Towers = team2_towers, '
-                                       'Team1Gold = team1_gold, '
-                                       'Team2Gold = team2_gold, '
-                                       'Team1Kills = team1_kills, '
-                                       'Team2Kills = team2_kills, '
-                                       'Team1RiftHeralds = team1_rift_heralds, '
-                                       'Team2RiftHeralds = team2_rift_heralds, '
-                                       'Team1Inhibitors = team1_inhibitors, '
-                                       'Team2Inhibitors = team2_inhibitors, '
-                                       'Patch = patch, '
-                                       'MatchHistory = match_history_url, '
-                                       'VOD = vod_url, '
-                                       'Gamename = game_in_match, '
-                                       'OverviewPage = overview_page, '
-                                       'ScoreboardID_Wiki = leaguepedia_game_id, ',
-                                where="ScoreboardGame.Tournament='{}'".format(tournament_name),
-                                order_by="ScoreboardGame.DateTime_UTC",
-                                **kwargs)
+        games = self._cargoquery(tables='ScoreboardGame',
+                                 fields='Tournament = tournament, '
+                                        'Team1 = team1, '
+                                        'Team2 = team2, '
+                                        'Winner = winner, '
+                                        'DateTime_UTC = date_time_utc, '
+                                        'DST = dst, '
+                                        'Team1Score = team1_match_score, '
+                                        'Team2Score = team2_match_score, '
+                                        'Team1Bans = team1_bans, '
+                                        'Team2Bans = team2_bans, '
+                                        'Team1Picks = team1_picks, '
+                                        'Team2Picks = team2_picks, '
+                                        'Team1Names = team1_names, '
+                                        'Team2Names = team2_names, '
+                                        'Team1Links = team1_links, '
+                                        'Team2Links = team2_links, '
+                                        'Team1Dragons = team1_dragons, '
+                                        'Team2Dragons = team2_dragons, '
+                                        'Team1Barons = team1_barons, '
+                                        'Team2Barons = team2_barons, '
+                                        'Team1Towers = team1_towers, '
+                                        'Team2Towers = team2_towers, '
+                                        'Team1Gold = team1_gold, '
+                                        'Team2Gold = team2_gold, '
+                                        'Team1Kills = team1_kills, '
+                                        'Team2Kills = team2_kills, '
+                                        'Team1RiftHeralds = team1_rift_heralds, '
+                                        'Team2RiftHeralds = team2_rift_heralds, '
+                                        'Team1Inhibitors = team1_inhibitors, '
+                                        'Team2Inhibitors = team2_inhibitors, '
+                                        'Patch = patch, '
+                                        'MatchHistory = match_history_url, '
+                                        'VOD = vod_url, '
+                                        'Gamename = game_in_match, '
+                                        'OverviewPage = overview_page, '
+                                        'ScoreboardID_Wiki = leaguepedia_game_id, ',
+                                 where="ScoreboardGame.Tournament='{}'".format(tournament_name),
+                                 order_by="ScoreboardGame.DateTime_UTC",
+                                 **kwargs)
+
+        if get_players:
+            for game in games:
+                game['players'] = self.get_players(game['team1_links'].split(',') + game['team2_links'].split(','))
+
+        return games
 
     def get_picks_bans(self, game, **kwargs) -> dict:
         """
@@ -176,11 +188,11 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
                     The picks and bans dictionary, matched on ScoreboardGame/ScoreboardID_Wiki and PicksAndBansS7/GameID_Wiki
         """
         overview_page = game['overview_page']
-        if overview_page not in self.picks_bans_dict:
+        if overview_page not in self.picks_bans_cache:
             self._load_tournament_picks_bans(overview_page, **kwargs)
 
         try:
-            return self.picks_bans_dict[overview_page][game['leaguepedia_game_id']]
+            return self.picks_bans_cache[overview_page][game['leaguepedia_game_id']]
         except KeyError:
             return self._get_picks_bans_through_champions(game)
 
@@ -237,7 +249,7 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         :return: the player object representing its current information (including current player name)
         """
         return self._cargoquery(tables='Players, PlayerRedirects',
-                                join_on="Players._pageName = PlayerRedirects._pageName",
+                                join_on="Players._pageName = PlayerRedirects.OverviewPage",
                                 fields="Players.ID = game_name, "
                                        "Players.Image = image,"
                                        "Players.NameFull = real_name, "
@@ -258,27 +270,45 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         :param player_links: a list of player links, coming from ScoreboardGame.TeamXLinks most likely
         :return: a dict of player objects representing their current information with their link as the key
         """
+        results_dict = {}
+        for link in player_links:
+            if link in self.players_cache and \
+                    self.players_cache[link]['updated_at'] > datetime.datetime.now() - datetime.timedelta(hours=1):
+                results_dict[link] = self.players_cache[link]
 
-        return {p['link']: p for p in self._cargoquery(tables='Players, PlayerRedirects',
-                                                       join_on="Players._pageName = PlayerRedirects._pageName",
-                                                       fields="PlayerRedirects.AllName = link, "
-                                                              "Players.ID = game_name, "
-                                                              "Players.Image = image,"
-                                                              "Players.NameFull = real_name, "
-                                                              "Players.Birthdate  = birthday, "
-                                                              "Players.Team = team, "
-                                                              "Players.Role = role, "
-                                                              "Players.SoloqueueIds = account_names, "
-                                                              "Players.Stream = stream, "
-                                                              "Players.Twitter = twitter, "
-                                                              "Players._pageName = page_name",
-                                                       where="PlayerRedirects.AllName = '" +
-                                                             "' OR PlayerRedirects.AllName = '".join(player_links) +
-                                                             "'",
-                                                       **kwargs)}
+        missing_links = [link for link in player_links if link not in results_dict]
+        if not missing_links:
+            return results_dict
+
+        new_players = {p['link']: p for p in self._cargoquery(tables='Players, PlayerRedirects',
+                                                              join_on="Players._pageName = PlayerRedirects.OverviewPage",
+                                                              fields="PlayerRedirects.AllName = link, "
+                                                                     "Players.ID = game_name, "
+                                                                     "Players.Image = image,"
+                                                                     "Players.NameFull = real_name, "
+                                                                     "Players.Birthdate  = birthday, "
+                                                                     "Players.Team = team, "
+                                                                     "Players.Role = role, "
+                                                                     "Players.SoloqueueIds = account_names, "
+                                                                     "Players.Stream = stream, "
+                                                                     "Players.Twitter = twitter, "
+                                                                     "Players._pageName = page_name",
+                                                              where="PlayerRedirects.AllName = '" +
+                                                                    "' OR PlayerRedirects.AllName = '".join(
+                                                                        missing_links) +
+                                                                    "'",
+                                                              **kwargs)}
+
+        for p in new_players:
+            new_players[p]['updated_at'] = datetime.datetime.now()
+            results_dict[p] = new_players[p]
+
+        self.players_cache.update(new_players)
+
+        return results_dict
 
     def _load_tournament_picks_bans(self, overview_page, **kwargs):
-        self.picks_bans_dict[overview_page] = \
+        self.picks_bans_cache[overview_page] = \
             {pb['leaguepedia_game_id']: pb for pb in
              self._cargoquery(tables='PicksAndBansS7',
                               fields='Team1Role1 = team1_role1, '
@@ -340,7 +370,7 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
 
         # We simply look at all picks and bans and see if there was one with the same 20 champions and team names
         matched_pb = []
-        for possible_pb in self.picks_bans_dict[game['overview_page']].values():
+        for possible_pb in self.picks_bans_cache[game['overview_page']].values():
             if not game['team1'] == possible_pb['team1'] and game['team2'] == possible_pb['team2']:
                 continue
             possible_pb_list = [(sorted([
