@@ -7,14 +7,14 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 
 setuptools.setup(
     name='leaguepedia_parser',
-    version='0.1',
-    packages=[setuptools.find_packages()],
+    version='0.1.1',
+    packages=['leaguepedia_parser'],
     url='https://github.com/mrtolkien/leaguepedia_parser',
     license='MIT',
     author='Tolki',
     install_requires=['mwclient'],
     author_email='gary.mialaret+pypi@gmail.com',
-    description='A parser for the Leaguepedia website.',
+    description='A parser for the Leaguepedia website, focused on accessing esports data.',
     long_description=long_description,
     long_description_content_type='text/markdown'
 )

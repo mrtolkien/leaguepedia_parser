@@ -72,3 +72,8 @@ class TestLeaguepediaParser(TestCase):
 
         self.assertIsNotNone(lp.get_team_logo('T1'))
         self.assertIsNotNone(lp.get_team_logo('G2 Esports'))
+
+    def test_player(self):
+        lp = LeaguepediaParser()
+
+        self.assertIsNotNone(lp.get_player('Faker')['real_name'])

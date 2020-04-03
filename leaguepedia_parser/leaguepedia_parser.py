@@ -35,7 +35,7 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         # picks_bans_dict[tournament_name][leaguepedia_game_id] = {pick_bans}
         self.picks_bans_dict = {}
 
-    def _cargoquery(self, **kwargs):
+    def _cargoquery(self, **kwargs) -> list:
         if 'limit' in kwargs:
             limit = kwargs.pop('limit')
         else:
@@ -113,7 +113,7 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
                                 where=where_string,
                                 **kwargs)
 
-    def get_games(self, tournament_name=None, **kwargs):
+    def get_games(self, tournament_name=None, **kwargs) -> List[dict]:
         """
         Returns the list of games played in a tournament.
         Notable keys include 'leaguepedia_game_id', 'winner', 'date_time_utc', 'match_history_url', 'vod_url'.
@@ -164,7 +164,7 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
                                 order_by="ScoreboardGame.DateTime_UTC",
                                 **kwargs)
 
-    def get_picks_bans(self, game, **kwargs):
+    def get_picks_bans(self, game, **kwargs) -> dict:
         """
         Returns the picks and bans for a game.
 
@@ -228,6 +228,28 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         if not river_mwclient_loaded:
             raise Exception('This features requires river_mwclient')
         return self.cache.get('Team', team_abbreviation, 'long')
+
+    def get_player(self, player_link, **kwargs) -> dict:
+        """
+        Returns the Player object from a player link.
+
+        :param player_link: a player link , coming from ScoreboardGame.TeamXLinks or ScoreboardPlayer.Link for example
+        :return: the player object representing its current information (including current player name)
+        """
+        return self._cargoquery(tables='Players, PlayerRedirects',
+                                join_on="Players._pageName = PlayerRedirects._pageName",
+                                fields="Players.ID = game_name, "
+                                       "Players.Image = image,"
+                                       "Players.NameFull = real_name, "
+                                       "Players.Birthdate  = birthday, "
+                                       "Players.Team = team, "
+                                       "Players.Role = role, "
+                                       "Players.SoloqueueIds = account_names, "
+                                       "Players.Stream = stream, "
+                                       "Players.Twitter = twitter, "
+                                       "Players._pageName = page_name",
+                                where="PlayerRedirects.AllName = '{}'".format(player_link),
+                                **kwargs)[0]
 
     def _load_tournament_picks_bans(self, overview_page, **kwargs):
         self.picks_bans_dict[overview_page] = \
