@@ -181,11 +181,12 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         Returns the picks and bans for a game.
 
         Only issues a query if picks and bans for the tournament have not been loaded yet.
+        Raises a KeyError if it cannot be found.
 
         :param game
                     Game dictionary, coming from get_games()
         :return:
-                    The picks and bans dictionary, matched on ScoreboardGame/ScoreboardID_Wiki and PicksAndBansS7/GameID_Wiki
+                    The picks and bans dictionary, matched on ScoreboardGame/ScoreboardID_Wiki = PicksAndBansS7/GameID_Wiki
         """
         overview_page = game['overview_page']
         if overview_page not in self.picks_bans_cache:
@@ -375,7 +376,7 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
             for team_id in [1, 2]
             for pick_or_ban in ['picks', 'bans']]
 
-        # We simply look at all picks and bans and see if there was one with the same 20 champions and team names
+        # We simply look at all picks and bans in the tournament and try to match
         matched_pb = []
         for possible_pb in self.picks_bans_cache[game['overview_page']].values():
             if not game['team1'] == possible_pb['team1'] and game['team2'] == possible_pb['team2']:
@@ -392,6 +393,6 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         if matched_pb.__len__() == 1:
             return matched_pb[0]
         else:
-            raise Exception('Picks and bans could not be found for game {}'.format(game['leaguepedia_game_id']))
+            raise KeyError('Picks and bans could not be found for game {}'.format(game['leaguepedia_game_id']))
 
 ##

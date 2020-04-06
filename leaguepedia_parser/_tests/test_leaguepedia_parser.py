@@ -62,7 +62,7 @@ class TestLeaguepediaParser(TestCase):
             game = games[0]
             game['leaguepedia_game_id'] = 'BUG'
             game['team1_picks'] = 'BUG'
-            with self.assertRaises(Exception):
+            with self.assertRaises(KeyError):
                 lp.get_picks_bans(game)
 
     def test_get_long_team_name(self):
