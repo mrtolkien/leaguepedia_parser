@@ -1,3 +1,4 @@
+import time
 from typing import List
 import datetime
 import sys
@@ -16,7 +17,6 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
 
     Full documentation: https://lol.gamepedia.com/Help:API_Documentation
     """
-
     def __init__(self,
                  get_full_results: bool = False,
                  **kwarg):
@@ -31,6 +31,9 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
             self.client = mwclient.Site('lol.gamepedia.com', path='/', **kwarg)
             self.query = lambda **kwargs: [row['title'] for row in
                                            self.client.api('cargoquery', **kwargs)['cargoquery']]
+
+        # Boolean that’s used to freeze cache-based functions in case of multi-threading.
+        self.updating = False
 
         # leaguepedia_game_id is the field called ScoreboardID_Wiki in ScoreboardGame
         # picks_bans_cache[tournament_name][leaguepedia_game_id] = {pick_bans}
@@ -172,7 +175,7 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
 
         if get_players:
             for game in games:
-                game['players'] = self.get_players(game['team1_links'].split(',') + game['team2_links'].split(','))
+                game['players'] = self._get_players(game['team1_links'].split(',') + game['team2_links'].split(','))
 
         return games
 
@@ -190,7 +193,12 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         """
         overview_page = game['overview_page']
         if overview_page not in self.picks_bans_cache:
+            if self.updating:
+                time.sleep(.1)
+                return self.get_picks_bans(game, **kwargs)
+            self.updating = True
             self._load_tournament_picks_bans(overview_page, **kwargs)
+            self.updating = False
 
         try:
             return self.picks_bans_cache[overview_page][game['leaguepedia_game_id']]
@@ -244,11 +252,12 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
 
     def get_player(self, player_link, **kwargs) -> dict:
         """
-        Returns the Player object from a player link. Returns None if the player doesn't have a page.
+        Returns the Player object from a given player link. Returns {} if the player doesn’t have a page.
 
         :param player_link: a player link , coming from ScoreboardGame.TeamXLinks or ScoreboardPlayer.Link for example
         :return: the player object representing its current information (including current player name)
         """
+        # TODO Make this raise KeyError if player isn’t found, and handle it in _get_players
         try:
             return self._cargoquery(tables='Players, PlayerRedirects',
                                     join_on="Players._pageName = PlayerRedirects.OverviewPage",
@@ -267,13 +276,17 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         except IndexError:
             return {}
 
-    def get_players(self, player_links, **kwargs) -> dict:
+    def _get_players(self, player_links) -> dict:
         """
         Returns the Player object from a list of player links.
 
         :param player_links: a list of player links, coming from ScoreboardGame.TeamXLinks most likely
         :return: a dict of player objects representing their current information with their link as the key
         """
+        if self.updating:
+            time.sleep(.1)
+            return self._get_players(player_links)
+
         results_dict = {}
         for link in player_links:
             if link in self.players_cache and \
@@ -284,34 +297,14 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         if not missing_links:
             return results_dict
 
+        self.updating = True
         new_players = {link: self.get_player(link) for link in missing_links}
-
-        # TODO Find a way to make a single query while using the proper links
-        # new_players = {p['link']: p for p in self._cargoquery(tables='Players, PlayerRedirects',
-        #                                                       join_on="Players._pageName = PlayerRedirects.OverviewPage",
-        #                                                       fields="PlayerRedirects.AllName = link, "
-        #                                                              "Players.ID = game_name, "
-        #                                                              "Players.Image = image,"
-        #                                                              "Players.NameFull = real_name, "
-        #                                                              "Players.Birthdate  = birthday, "
-        #                                                              "Players.Team = team, "
-        #                                                              "Players.Role = role, "
-        #                                                              "Players.SoloqueueIds = account_names, "
-        #                                                              "Players.Stream = stream, "
-        #                                                              "Players.Twitter = twitter, "
-        #                                                              "Players._pageName = page_name",
-        #                                                       where="PlayerRedirects.AllName = '" +
-        #                                                             "' OR PlayerRedirects.AllName = '".join(
-        #                                                                 missing_links) +
-        #                                                             "'",
-        #                                                       **kwargs)}
-
         for p in new_players:
             # Necessary to handle None objects from get_player.
             new_players[p]['updated_at'] = datetime.datetime.now()
             results_dict[p] = new_players[p]
-
         self.players_cache.update(new_players)
+        self.updating = False
 
         return results_dict
 

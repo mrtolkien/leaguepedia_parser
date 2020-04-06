@@ -85,12 +85,12 @@ class TestLeaguepediaParser(TestCase):
 
     def test_get_players(self):
         lp = LeaguepediaParser()
-        players = lp.get_players(['Faker', 'PERKZ'])
+        players = lp._get_players(['Faker', 'PERKZ'])
         self.assertIsNotNone(players)
 
         # We try getting players 1000 times. If queries are cached properly, it should be way below 1s.
         self.assertLess(timeit.timeit(
-            "lp.get_players(['Faker', 'PERKZ'])",
+            "lp._get_players(['Faker', 'PERKZ'])",
             setup="import leaguepedia_parser\nlp=leaguepedia_parser.LeaguepediaParser()",
             number=10000), 2)
 
