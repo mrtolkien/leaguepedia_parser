@@ -104,18 +104,20 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
                                  ('TournamentLevel', tournament_level),
                                  ('IsPlayoffs', is_playoffs)] if value is not None])[5:]  # Cutting the leading AND
 
-        return self._cargoquery(tables='Tournaments',
-                                fields='Name = name, '
-                                       'DateStart = date_start, '
-                                       'Date = date_end, '
-                                       'Region = region, '
-                                       'League = league, '
-                                       'Rulebook = rulebook, '
-                                       'TournamentLevel = tournament_level, '
-                                       'IsQualifier = is_qualifier, '
-                                       'IsPlayoffs = is_playoffs, '
-                                       'IsOfficial = is_official, '
-                                       'OverviewPage = overview_page',
+        return self._cargoquery(tables='Tournaments, Leagues',
+                                join_on="Tournaments.League = Leagues.League",
+                                fields='Tournaments.Name = name, '
+                                       'Tournaments.DateStart = date_start, '
+                                       'Tournaments.Date = date_end, '
+                                       'Tournaments.Region = region, '
+                                       'Tournaments.League = league, '
+                                       'Leagues.League_Short = league_short, '
+                                       'Tournaments.Rulebook = rulebook, '
+                                       'Tournaments.TournamentLevel = tournament_level, '
+                                       'Tournaments.IsQualifier = is_qualifier, '
+                                       'Tournaments.IsPlayoffs = is_playoffs, '
+                                       'Tournaments.IsOfficial = is_official, '
+                                       'Tournaments.OverviewPage = overview_page',
                                 order_by="Tournaments.Date",
                                 where=where_string,
                                 **kwargs)
