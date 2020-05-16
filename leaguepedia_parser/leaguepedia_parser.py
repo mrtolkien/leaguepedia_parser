@@ -134,7 +134,7 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
         :return:
                     A list of game dictionaries.
         """
-        games = self._cargoquery(tables='ScoreboardGame',
+        games = self._cargoquery(tables='ScoreboardGames',
                                  fields='Tournament = tournament, '
                                         'Team1 = team1, '
                                         'Team2 = team2, '
@@ -171,8 +171,8 @@ class LeaguepediaParser(EsportsClient if river_mwclient_loaded else object):
                                         'Gamename = game_in_match, '
                                         'OverviewPage = overview_page, '
                                         'ScoreboardID_Wiki = leaguepedia_game_id, ',
-                                 where="ScoreboardGame.Tournament='{}'".format(tournament_name),
-                                 order_by="ScoreboardGame.DateTime_UTC",
+                                 where="ScoreboardGames.Tournament='{}'".format(tournament_name),
+                                 order_by="ScoreboardGames.DateTime_UTC",
                                  **kwargs)
 
         if get_players:
