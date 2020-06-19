@@ -23,8 +23,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install mwclient
-        pip install -U git+git://github.com/RheingoldRiver/river_mwclient
+        pip install -r requirements.txt
     - name: Lint with flake8
       run: |
         pip install flake8

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "b89aa61a72f9e3397831208393ce74828e78074f03ffc021baba552e5c5534ad"
+            "sha256": "d1fcf527257e59041fb939fca180fe7e98c5c17a7d8d088fc4d6044f4f0b8100"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -74,10 +74,10 @@
         },
         "lol-dto": {
             "hashes": [
-                "sha256:bf5cdae7fb426025bfa55c174cc8c8ebb1a07cbaf45608ccfe57c7b243322ac1"
+                "sha256:9b8cfd92d61cfeef12f52e0e5e5b672234827b25750558530ec0a4eea1ac9537"
             ],
             "index": "pypi",
-            "version": "==0.0.3"
+            "version": "==0.1a0"
         },
         "lol-id-tools": {
             "hashes": [

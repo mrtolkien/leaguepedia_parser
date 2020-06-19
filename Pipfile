@@ -9,7 +9,7 @@ pytest = "*"
 [packages]
 mwclient = '*'
 lol-id-tools = "*"
-lol-dto = "*"
+lol-dto = "==0.1a0"
 
 [requires]
 python_version = "3.8"
