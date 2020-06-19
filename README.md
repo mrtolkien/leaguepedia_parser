@@ -1,3 +1,4 @@
+DOCUMENTATION OBSOLETE FOR V1.0
 # leaguepedia_parser
 A parser for the Leaguepedia website, focused on accessing esports data.
 

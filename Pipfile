@@ -4,10 +4,12 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
+pytest = "*"
 
 [packages]
 mwclient = '*'
-river-mwclient = {editable = true,git = "https://github.com/RheingoldRiver/river_mwclient.git"}
+lol-id-tools = "*"
+lol-dto = "*"
 
 [requires]
 python_version = "3.8"

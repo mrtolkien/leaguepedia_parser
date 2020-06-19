@@ -2,19 +2,24 @@ import setuptools
 from os import path
 
 this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
 setuptools.setup(
-    name='leaguepedia_parser',
-    version='0.3.0',
-    packages=['leaguepedia_parser'],
-    url='https://github.com/mrtolkien/leaguepedia_parser',
-    license='MIT',
-    author='Tolki',
-    install_requires=['mwclient'],
-    author_email='gary.mialaret+pypi@gmail.com',
-    description='A parser for the Leaguepedia website, focused on accessing esports data.',
+    name="leaguepedia_parser",
+    version="1.0a0",
+    packages=[
+        "leaguepedia_parser",
+        "leaguepedia_parser/parsers",
+        "leaguepedia_parser/transmuters",
+        "leaguepedia_parser/site",
+    ],
+    url="https://github.com/mrtolkien/leaguepedia_parser",
+    license="MIT",
+    author='Gary "Tolki" Mialaret',
+    install_requires=["mwclient", "lol_dto >= 0.1a0", "lol_id_tools"],
+    author_email="gary.mialaret+pypi@gmail.com",
+    description="A parser for Leaguepedia.",
     long_description=long_description,
-    long_description_content_type='text/markdown'
+    long_description_content_type="text/markdown",
 )
