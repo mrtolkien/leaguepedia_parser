@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "d1fcf527257e59041fb939fca180fe7e98c5c17a7d8d088fc4d6044f4f0b8100"
+            "sha256": "dda1d72aa7beec17adcd87042e68b87e4e762143778fe5f062cc0a5856873e9f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -74,17 +74,17 @@
         },
         "lol-dto": {
             "hashes": [
-                "sha256:9b8cfd92d61cfeef12f52e0e5e5b672234827b25750558530ec0a4eea1ac9537"
+                "sha256:1ba1396a202baf617398bbd4952a42b7a47e476c8919f7df7fab007aad9f125e"
             ],
             "index": "pypi",
-            "version": "==0.1a0"
+            "version": "==0.1a1"
         },
         "lol-id-tools": {
             "hashes": [
-                "sha256:88614748d2355486dd7fc891a394da417f34dcc9d31f7c5463deeac488bc182e"
+                "sha256:b94d5fb2ef0c7a3647190630f8248ce4684085c919004347a2951de12469a9c7"
             ],
             "index": "pypi",
-            "version": "==1.3.2"
+            "version": "==1.4.0"
         },
         "multidict": {
             "hashes": [

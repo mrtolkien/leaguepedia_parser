@@ -3,9 +3,10 @@ from datetime import datetime, timezone
 from typing import TypedDict
 
 import lol_id_tools as lit
-from lol_dto.classes.game import LolGame, LolGameTeam, LolGamePlayer
+from lol_dto.classes.game import LolGame, LolGameTeam, LolGamePlayer, LolGameTeamEndOfGameStats
 
 from leaguepedia_parser.transmuters.game_players import LeaguepediaPlayerIdentifier
+
 
 game_fields = {
     "Tournament",
@@ -47,6 +48,7 @@ game_fields = {
 class LeaguepediaGameIdentifier(TypedDict):
     scoreboardIdWiki: str
     uniqueGame: str
+    match_history_url: str
 
 
 def transmute_game(source_dict: dict) -> LolGame:
@@ -57,7 +59,9 @@ def transmute_game(source_dict: dict) -> LolGame:
     game = LolGame(
         sources={
             "leaguepedia": LeaguepediaGameIdentifier(
-                scoreboardIdWiki=source_dict["ScoreboardID Wiki"], uniqueGame=source_dict["UniqueGame"]
+                scoreboardIdWiki=source_dict["ScoreboardID Wiki"],
+                uniqueGame=source_dict["UniqueGame"],
+                match_history_url=source_dict["MatchHistory"],
             )
         },
         tournament=source_dict["Tournament"],
@@ -86,10 +90,12 @@ def transmute_game(source_dict: dict) -> LolGame:
                 ],
                 bansNames=source_dict[f"Team{i}Bans"].split(","),
                 bans=[lit.get_id(champion) for champion in source_dict[f"Team{i}Bans"].split(",")],
-                towerKills=int(source_dict[f"Team{i}Towers"] or 0),
-                dragonKills=int(source_dict[f"Team{i}Dragons"] or 0),
-                riftHeraldKills=int(source_dict[f"Team{i}RiftHeralds"] or 0),
-                baronKills=int(source_dict[f"Team{i}Barons"] or 0),
+                endOfGameStats=LolGameTeamEndOfGameStats(
+                    towerKills=int(source_dict[f"Team{i}Towers"] or 0),
+                    dragonKills=int(source_dict[f"Team{i}Dragons"] or 0),
+                    riftHeraldKills=int(source_dict[f"Team{i}RiftHeralds"] or 0),
+                    baronKills=int(source_dict[f"Team{i}Barons"] or 0),
+                ),
             )
             for side, i in [("BLUE", 1), ("RED", 2)]
         },

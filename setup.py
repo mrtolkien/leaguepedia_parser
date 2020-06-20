@@ -17,7 +17,7 @@ setuptools.setup(
     url="https://github.com/mrtolkien/leaguepedia_parser",
     license="MIT",
     author='Gary "Tolki" Mialaret',
-    install_requires=["mwclient", "lol_dto >= 0.1a0", "lol_id_tools >= 1.4.0"],
+    install_requires=["mwclient", "lol_dto >= 0.1a1", "lol_id_tools >= 1.4.0"],
     author_email="gary.mialaret+pypi@gmail.com",
     description="A parser for Leaguepedia.",
     long_description=long_description,

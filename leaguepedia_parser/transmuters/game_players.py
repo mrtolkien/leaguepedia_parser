@@ -1,18 +1,18 @@
 from typing import List, TypedDict
-from lol_dto.classes.game import LolGame, LolGamePlayer
+from lol_dto.classes.game import LolGame
 import lol_id_tools as lit
 
-# TODO Add those fields
+# TODO Add more fields?
 game_players_fields = {
     "ScoreboardPlayers.Name=gameName",
     "ScoreboardPlayers.Role_Number=gameRoleNumber",
     "ScoreboardPlayers.Champion",
     "ScoreboardPlayers.Side",
     "Players.Name=irlName",
-    # "Players.ID=currentGameName",
-    # "Players.Image",
     "Players.Country",
     "Players.Birthdate",
+    # "Players.ID=currentGameName",
+    # "Players.Image",
     # "Players.Team=currentTeam",
     # "Players.Role=currentRole",
     # "Players.SoloqueueIds",
