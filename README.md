@@ -1,42 +1,36 @@
-DOCUMENTATION OBSOLETE FOR V1.0
-# leaguepedia_parser
-A parser for the Leaguepedia website, focused on accessing esports data.
+[![Generic badge](https://img.shields.io/github/workflow/status/mrtolkien/leaguepedia_parser/Python%20application)](https://shields.io/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-Possible future functionality includes  direct querying for games from team names, fuzzy matching for tournament names, .... Any help is welcome, I am currently only adding features that I use on my projects.
+# leaguepedia_parser
+A parser for Leaguepedia focused on accessing esports data.
+
+It is very minimal at the moment and focused on my own usage of Leaguepedia’s data. Pull requests to add features are
+more than welcome! 
 
 # Install
 `pip install leaguepedia_parser`
+
+# Demo
+![Demo](leaguepedia_parser_demo.gif)
 
 # Usage
 ```python
 import leaguepedia_parser
 
-lp = leaguepedia_parser.LeaguepediaParser()
-
 # Gets you available regions
-lp.get_tournament_regions()
+regions = leaguepedia_parser.get_regions() 
 
 # Gets you tournaments in the region, by default only returns primary tournaments
-tournaments = lp.get_tournaments('Korea', year=2020)
+tournaments = leaguepedia_parser.get_tournaments("Korea", year=2020)
 
 # Gets you all games for a tournament. Get the name from get_tournaments()
-games = lp.get_games(tournaments[0]['name'])
+games = leaguepedia_parser.get_games("LCK 2020 Spring")
 
 # Gets picks and bans for a game. Get the game object from get_games()
-lp.get_picks_bans(games[0])
+game = leaguepedia_parser.get_game_details(games[0])
 
 # Gets the URL of the team’s logo
-lp.get_team_logo('T1')
-
-# Get player’s info
-lp.get_player('Faker')
+logo_url = leaguepedia_parser.get_team_logo('T1')
 ```
 
-More usage examples can be found in the `_tests` folder where every function is tested at least once.
-
-# river_mwclient
-
-If you installed `river_mwclient`, the `LeaguepediaParser` class will inherit from its `EsportsClient` class.
-
-If not, it
-will simply be a wrapper for `mwclient`.
+More usage examples can be found in the [`_tests` folder](https://github.com/mrtolkien/leaguepedia_parser/tree/master/leaguepedia_parser/_tests).
