@@ -26,11 +26,16 @@ def test_get_details():
     for tournament_name in tournaments_names:
         games = leaguepedia_parser.get_games(tournament_name)
 
+        # First, test without pageId
+        leaguepedia_parser.get_game_details(games[0])
+
+        # Then test with pageId
         game = leaguepedia_parser.get_game_details(games[0], True)
 
         assert 'picksBans' in game
 
         for team in 'BLUE', 'RED':
+            assert len(game['teams'][team]['players']) == 5
             for player in game['teams'][team]['players']:
                 assert 'irlName' in player['uniqueIdentifiers']['leaguepedia']
                 assert 'birthday' in player['uniqueIdentifiers']['leaguepedia']

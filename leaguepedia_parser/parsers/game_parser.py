@@ -138,21 +138,16 @@ def _get_picks_bans(game: LolGame) -> List[LolPickBan]:
 def _add_game_players(game: LolGame, add_page_id: bool) -> LolGame:
     """Joins on PlayersRedirect to get all players information.
     """
-    # TODO Make that more beautiful
+    # TODO Make that more beautiful, not satisfied with black’s formatting
     players = leaguepedia.query(
-        tables=f"ScoreboardGames, ScoreboardPlayers, PlayerRedirects, Players" + ", _pageData = PD"
-        if add_page_id
-        else "",
+        tables=f"ScoreboardGames, ScoreboardPlayers, PlayerRedirects, Players"
+        + (", _pageData = PD" if add_page_id else ""),
         join_on="ScoreboardGames.UniqueGame = ScoreboardPlayers.UniqueGame, "
         "ScoreboardPlayers.Link = PlayerRedirects.AllName, "
-        "PlayerRedirects._pageName = Players._pageName" + ", Players._pageName = PD._pageName"
-        if add_page_id
-        else "",
-        fields=", ".join(game_players_fields) + ", PD._pageID=pageId" if add_page_id else "",
+        "PlayerRedirects._pageName = Players._pageName" + (", Players._pageName = PD._pageName" if add_page_id else ""),
+        fields=", ".join(game_players_fields) + (", PD._pageID=pageId" if add_page_id else ""),
         where=f"ScoreboardGames.UniqueGame = '{game['sources']['leaguepedia']['uniqueGame']}'"
-        + "AND PD._isRedirect = 0"
-        if add_page_id
-        else "",
+        + ("AND PD._isRedirect = 0" if add_page_id else ""),
     )
 
     return add_players(game, players)
