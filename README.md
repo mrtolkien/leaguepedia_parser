@@ -17,16 +17,16 @@ more than welcome!
 ```python
 import leaguepedia_parser
 
-# Gets you available regions
+# Gets regions names
 regions = leaguepedia_parser.get_regions() 
 
-# Gets you tournaments in the region, by default only returns primary tournaments
+# Gets tournaments in the region, by default only returns primary tournaments
 tournaments = leaguepedia_parser.get_tournaments("Korea", year=2020)
 
-# Gets you all games for a tournament. Get the name from get_tournaments()
+# Gets all games for a tournament. Get the name from get_tournaments()
 games = leaguepedia_parser.get_games("LCK 2020 Spring")
 
-# Gets picks and bans for a game. Get the game object from get_games()
+# Gets picks and bans and other details from a game. Get the game object from get_games()
 game = leaguepedia_parser.get_game_details(games[0])
 
 # Gets the URL of the team’s logo
