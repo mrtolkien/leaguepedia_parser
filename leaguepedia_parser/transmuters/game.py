@@ -101,7 +101,7 @@ def transmute_game(source_dict: dict) -> LolGame:
         },
     )
 
-    # TODO Handle QQ vs Riot games properly
+    # TODO Handle QQ games in a similar fashion
     if "qq.com" not in source_dict["MatchHistory"]:
         parsed_url = urllib.parse.urlparse(urllib.parse.urlparse(source_dict["MatchHistory"]).fragment)
 
@@ -109,6 +109,6 @@ def transmute_game(source_dict: dict) -> LolGame:
         platform_id, game_id = parsed_url.path.split("/")[1:]
         game_hash = query["gameHash"][0]
 
-        game["sources"]["riotLolApi"] = {"gameId": game_id, "platformId": platform_id, "gameHash": game_hash}
+        game["sources"]["riotLolApi"] = {"gameId": int(game_id), "platformId": platform_id, "gameHash": game_hash}
 
     return game
