@@ -33,25 +33,36 @@ class LeaguepediaPlayerIdentifier(TypedDict, total=False):
 def add_players(game: LolGame, players: List[dict]) -> LolGame:
     """Adds additional player information from ScoreboardPlayers.
     """
-    for player in players:
-        team_side = "BLUE" if player["Side"] == "1" else "RED"
-        champion_id = lit.get_id(player["Champion"], object_type="champion")
 
-        # We get player by side and champion, which works even for blind picks
-        game_player = next(p for p in game["teams"][team_side]["players"] if p["championId"] == champion_id)
+    for team_side in game["teams"]:
+        team_side_leaguepedia = "1" if team_side == "BLUE" else "2"
 
-        game_player["role"] = role_translation[player["gameRoleNumber"]]
+        for idx, game_player in enumerate(game["teams"][team_side]["players"]):
+            try:
+                # We get the player object from the Leaguepedia players list
+                player = next(
+                    p
+                    for p in players
+                    if p["Side"] == team_side_leaguepedia
+                    and lit.get_id(p["Champion"], object_type="champion") == game_player["championId"]
+                )
 
-        unique_identifiers = game_player["uniqueIdentifiers"]["leaguepedia"]
-        unique_identifiers: LeaguepediaPlayerIdentifier
+                game_player["role"] = role_translation[player["gameRoleNumber"]]
 
-        assert player["gameName"] == unique_identifiers["name"]
+                unique_identifiers = game_player["uniqueIdentifiers"]["leaguepedia"]
+                unique_identifiers: LeaguepediaPlayerIdentifier
 
-        unique_identifiers["irlName"] = player.get("irlName")
-        unique_identifiers["country"] = player.get("Country")
-        unique_identifiers["birthday"] = player.get("Birthdate")
+                assert player["gameName"] == unique_identifiers["name"]
 
-        if player.get("pageId"):
-            unique_identifiers["pageId"] = int(player["pageId"])
+                unique_identifiers["irlName"] = player.get("irlName")
+                unique_identifiers["country"] = player.get("Country")
+                unique_identifiers["birthday"] = player.get("Birthdate")
+
+                if player.get("pageId"):
+                    unique_identifiers["pageId"] = int(player["pageId"])
+
+            except StopIteration:
+                # Since we cannot get the role properly, we try to infer it
+                game_player["role"] = list(role_translation.values())[idx]
 
     return game
