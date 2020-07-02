@@ -51,7 +51,7 @@ def add_players(game: LolGame, players: List[dict]) -> LolGame:
         unique_identifiers["country"] = player["Country"]
         unique_identifiers["birthday"] = player["Birthdate"]
 
-        if "pageId" in player:
+        if player.get("pageId"):
             unique_identifiers["pageId"] = int(player["pageId"])
 
     return game
