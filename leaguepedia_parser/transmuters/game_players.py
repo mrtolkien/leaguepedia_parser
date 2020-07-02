@@ -47,9 +47,9 @@ def add_players(game: LolGame, players: List[dict]) -> LolGame:
 
         assert player["gameName"] == unique_identifiers["name"]
 
-        unique_identifiers["irlName"] = player["irlName"]
-        unique_identifiers["country"] = player["Country"]
-        unique_identifiers["birthday"] = player["Birthdate"]
+        unique_identifiers["irlName"] = player.get("irlName")
+        unique_identifiers["country"] = player.get("Country")
+        unique_identifiers["birthday"] = player.get("Birthdate")
 
         if player.get("pageId"):
             unique_identifiers["pageId"] = int(player["pageId"])
