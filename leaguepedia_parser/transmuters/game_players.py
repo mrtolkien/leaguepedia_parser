@@ -56,7 +56,7 @@ def add_players(game: LolGame, players: List[dict]) -> LolGame:
                 try:
                     assert player["gameName"] == unique_identifiers["name"]
                 except AssertionError:
-                    logging.warning(f"Names not matching for player {player['gameName']}/{unique_identifiers['name']}")
+                    logging.debug(f"Names not matching for player {player['gameName']}/{unique_identifiers['name']}")
 
                 unique_identifiers["irlName"] = player.get("irlName")
                 unique_identifiers["country"] = player.get("Country")
