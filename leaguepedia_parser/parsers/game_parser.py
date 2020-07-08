@@ -1,5 +1,5 @@
 from concurrent.futures.thread import ThreadPoolExecutor
-from typing import List
+from typing import List, Optional
 
 from lol_dto.classes.game import LolGame
 from lol_dto.classes.game.lol_game import LolPickBan
@@ -120,7 +120,7 @@ def get_game_details(game: LolGame, add_page_id=False) -> LolGame:
     return game
 
 
-def _get_picks_bans(game: LolGame) -> List[LolPickBan]:
+def _get_picks_bans(game: LolGame) -> Optional[List[LolPickBan]]:
     """Returns the picks and bans for the game.
     """
     # Double join as required by Leaguepedia
@@ -131,6 +131,9 @@ def _get_picks_bans(game: LolGame) -> List[LolPickBan]:
         fields=", ".join(picks_bans_fields),
         where=f"ScoreboardGames.ScoreboardID_Wiki = '{game['sources']['leaguepedia']['scoreboardIdWiki']}'",
     )
+
+    if not picks_bans:
+        return None
 
     return transmute_picks_bans(picks_bans[0])
 
