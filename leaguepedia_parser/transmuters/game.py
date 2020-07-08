@@ -70,7 +70,7 @@ def transmute_game(source_dict: dict) -> LolGame:
         .isoformat(timespec="seconds"),
         gameInSeries=int(source_dict["Gamename"].replace("Game ", "")),
         patch=source_dict["Patch"],
-        duration=int(float(source_dict["Gamelength Number"]) * 60),
+        duration=int(float(source_dict["Gamelength Number"] or 0) * 60),
         vod=source_dict["VOD"],
         winner="BLUE" if source_dict["Winner"] == "1" else "RED",
         teams={
