@@ -101,8 +101,8 @@ def transmute_game(source_dict: dict) -> LolGame:
         },
     )
 
-    # TODO Handle QQ games in a similar fashion
-    if "qq.com" not in source_dict["MatchHistory"]:
+    # For Riot API games, I directly parse the URL for the game to have its actual identifiers.
+    if "leagueoflegends.com" in source_dict["MatchHistory"]:
         parsed_url = urllib.parse.urlparse(urllib.parse.urlparse(source_dict["MatchHistory"]).fragment)
 
         query = urllib.parse.parse_qs(parsed_url.query)
