@@ -48,7 +48,8 @@ game_fields = {
 class LeaguepediaGameIdentifier(TypedDict):
     scoreboardIdWiki: str
     uniqueGame: str
-    match_history_url: str
+    matchHistoryUrl: str
+    overviewPage: str
 
 
 def transmute_game(source_dict: dict) -> LolGame:
@@ -61,7 +62,8 @@ def transmute_game(source_dict: dict) -> LolGame:
             "leaguepedia": LeaguepediaGameIdentifier(
                 scoreboardIdWiki=source_dict["ScoreboardID Wiki"],
                 uniqueGame=source_dict["UniqueGame"],
-                match_history_url=source_dict["MatchHistory"],
+                matchHistoryUrl=source_dict["MatchHistory"],
+                overviewPage=source_dict["OverviewPage"]
             )
         },
         tournament=source_dict["Tournament"],

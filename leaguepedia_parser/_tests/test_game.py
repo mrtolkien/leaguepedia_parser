@@ -1,7 +1,7 @@
 import leaguepedia_parser
 
 regions_names = ['China', 'Europe', 'Korea']
-tournaments_names = ['LEC 2020 Spring', 'LCK 2020 Spring', 'LPL 2020 Spring']
+tournaments_names = ['LEC/2020 Season/Spring Season', 'LCK/2020 Season/Spring Season', 'LPL/2020 Season/Spring Season']
 
 
 def test_regions():
@@ -13,6 +13,10 @@ def test_regions():
 def test_tournaments():
     for region in regions_names:
         tournaments = leaguepedia_parser.get_tournaments(region, year=2020)
+
+        for tournament in tournaments:
+            print(tournament["overviewPage"])
+
         assert len(tournaments) > 0
 
 
