@@ -1,7 +1,8 @@
-import logging
 from typing import List, TypedDict
 from lol_dto.classes.game import LolGame
 import lol_id_tools as lit
+
+from leaguepedia_parser.logger import leaguepedia_parser_logger
 
 # TODO Add more fields?
 game_players_fields = {
@@ -56,7 +57,9 @@ def add_players(game: LolGame, players: List[dict]) -> LolGame:
                 try:
                     assert player["gameName"] == unique_identifiers["name"]
                 except AssertionError:
-                    logging.debug(f"Names not matching for player {player['gameName']}/{unique_identifiers['name']}")
+                    leaguepedia_parser_logger.debug(
+                        f"Names not matching for player {player['gameName']}/{unique_identifiers['name']}"
+                    )
 
                 unique_identifiers["irlName"] = player.get("irlName")
                 unique_identifiers["country"] = player.get("Country")
