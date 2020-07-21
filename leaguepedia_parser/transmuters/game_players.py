@@ -1,8 +1,13 @@
-from typing import List, TypedDict
-from lol_dto.classes.game import LolGame
-import lol_id_tools as lit
-
 from leaguepedia_parser.logger import leaguepedia_parser_logger
+import lol_id_tools as lit
+from lol_dto.classes.game import LolGame
+import sys
+if sys.version_info >= (3, 8):
+    from typing import TypedDict
+else:
+    from typing import List
+    from typing_extensions import TypedDict, Literal, overload
+
 
 # TODO Add more fields?
 game_players_fields = {
