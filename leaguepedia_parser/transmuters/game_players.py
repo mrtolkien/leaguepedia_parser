@@ -15,6 +15,14 @@ game_players_fields = {
     "ScoreboardPlayers.Role_Number=gameRoleNumber",
     "ScoreboardPlayers.Champion",
     "ScoreboardPlayers.Side",
+    # ScoreboardPlayers.Deaths
+    # ScoreboardPlayers.Kills
+    # ScoreboardPlayers.Assists
+    # ScoreboardPlayers.SummonerSpells #split on " • "
+    # ScoreboardPlayers.Gold
+    # ScoreboardPlayers.CS
+    # ScoreboardPlayers.Items
+    # ScoreboardPlayers.KeystoneMastery or ScoreboardPlayers.KeystoneRune #depends on what season games were played
     "Players.Name=irlName",
     "Players.Country",
     "Players.Birthdate",
@@ -23,6 +31,7 @@ game_players_fields = {
     # "Players.Team=currentTeam",
     # "Players.Role=currentRole",
     # "Players.SoloqueueIds",
+
 }
 
 
