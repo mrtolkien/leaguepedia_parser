@@ -17,7 +17,8 @@ def get_regions() -> List[str]:
     Returns:
         The list of all region names, simply strings.
     """
-    regions_dicts_list = leaguepedia.query(tables="Tournaments", fields="Region", group_by="Region")
+    regions_dicts_list = leaguepedia.query(
+        tables="Tournaments", fields="Region", group_by="Region")
 
     return [row["Region"] for row in regions_dicts_list]
 
@@ -70,13 +71,13 @@ def get_tournaments(
     return [transmute_tournament(tournament) for tournament in result]
 
 
-def get_games(tournament_overview_page=None, **kwargs) -> List[LolGame]:
+def get_games(tournament_name=None, **kwargs) -> List[LolGame]:
     """Returns the list of games played in a tournament.
 
     Returns basic information about all games played in a tournament.
 
     Args:
-        tournament_overview_page: tournament overview page, acquired from get_tournaments().
+        tournament_name: tournament name, acquired from get_tournaments().
 
     Returns:
         A list of LolGame with basic game information.
@@ -85,7 +86,7 @@ def get_games(tournament_overview_page=None, **kwargs) -> List[LolGame]:
     games = leaguepedia.query(
         tables="ScoreboardGames",
         fields=", ".join(game_fields),
-        where=f"ScoreboardGames.OverviewPage ='{tournament_overview_page}'",
+        where=f"ScoreboardGames.OverviewPage ='{tournament_name}'",
         order_by="ScoreboardGames.DateTime_UTC",
         **kwargs,
     )
@@ -108,7 +109,8 @@ def get_game_details(game: LolGame, add_page_id=False) -> LolGame:
         assert "scoreboardIdWiki" in game["sources"]["leaguepedia"]
         assert "uniqueGame" in game["sources"]["leaguepedia"]
     except AssertionError:
-        raise ValueError(f"Leaguepedia Identifiers not present in the input object.")
+        raise ValueError(
+            f"Leaguepedia Identifiers not present in the input object.")
 
     with ThreadPoolExecutor() as executor:
         picks_bans_future = executor.submit(_get_picks_bans, game)
@@ -147,10 +149,15 @@ def _add_game_players(game: LolGame, add_page_id: bool) -> LolGame:
         + (", _pageData = PD" if add_page_id else ""),
         join_on="ScoreboardGames.UniqueGame = ScoreboardPlayers.UniqueGame, "
         "ScoreboardPlayers.Link = PlayerRedirects.AllName, "
-        "PlayerRedirects._pageName = Players._pageName" + (", Players._pageName = PD._pageName" if add_page_id else ""),
-        fields=", ".join(game_players_fields) + (", PD._pageID=pageId" if add_page_id else ""),
+        "PlayerRedirects._pageName = Players._pageName" +
+        (", Players._pageName = PD._pageName" if add_page_id else ""),
+        fields=", ".join(game_players_fields) +
+        (", PD._pageID=pageId" if add_page_id else ""),
         where=f"ScoreboardGames.UniqueGame = '{game['sources']['leaguepedia']['uniqueGame']}'"
         + ("AND PD._isRedirect = 0" if add_page_id else ""),
     )
 
     return add_players(game, players)
+
+# TODOs
+# def _add_player_game_items
