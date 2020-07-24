@@ -7,8 +7,15 @@ from lol_dto.classes.game.lol_game import LolPickBan
 from leaguepedia_parser.site.leaguepedia import leaguepedia
 from leaguepedia_parser.transmuters.game import game_fields, transmute_game
 from leaguepedia_parser.transmuters.game_players import game_players_fields, add_players
-from leaguepedia_parser.transmuters.picks_bans import picks_bans_fields, transmute_picks_bans
-from leaguepedia_parser.transmuters.tournament import transmute_tournament, tournaments_fields, LeaguepediaTournament
+from leaguepedia_parser.transmuters.picks_bans import (
+    picks_bans_fields,
+    transmute_picks_bans,
+)
+from leaguepedia_parser.transmuters.tournament import (
+    transmute_tournament,
+    tournaments_fields,
+    LeaguepediaTournament,
+)
 
 
 def get_regions() -> List[str]:
@@ -17,13 +24,19 @@ def get_regions() -> List[str]:
     Returns:
         The list of all region names, simply strings.
     """
-    regions_dicts_list = leaguepedia.query(tables="Tournaments", fields="Region", group_by="Region")
+    regions_dicts_list = leaguepedia.query(
+        tables="Tournaments", fields="Region", group_by="Region"
+    )
 
     return [row["Region"] for row in regions_dicts_list]
 
 
 def get_tournaments(
-    region: str = None, year: int = None, tournament_level: str = "Primary", is_playoffs: bool = None, **kwargs,
+    region: str = None,
+    year: int = None,
+    tournament_level: str = "Primary",
+    is_playoffs: bool = None,
+    **kwargs,
 ) -> List[LeaguepediaTournament]:
     """Returns a list of tournaments.
 
@@ -70,7 +83,7 @@ def get_tournaments(
     return [transmute_tournament(tournament) for tournament in result]
 
 
-def get_games(tournament_overview_page=None, **kwargs) -> List[LolGame]:
+def get_games(tournament_name=None, **kwargs) -> List[LolGame]:
     """Returns the list of games played in a tournament.
 
     Returns basic information about all games played in a tournament.
@@ -85,7 +98,7 @@ def get_games(tournament_overview_page=None, **kwargs) -> List[LolGame]:
     games = leaguepedia.query(
         tables="ScoreboardGames",
         fields=", ".join(game_fields),
-        where=f"ScoreboardGames.OverviewPage ='{tournament_overview_page}'",
+        where=f"ScoreboardGames.OverviewPage ='{tournament_name}'",
         order_by="ScoreboardGames.DateTime_UTC",
         **kwargs,
     )
@@ -147,8 +160,10 @@ def _add_game_players(game: LolGame, add_page_id: bool) -> LolGame:
         + (", _pageData = PD" if add_page_id else ""),
         join_on="ScoreboardGames.UniqueGame = ScoreboardPlayers.UniqueGame, "
         "ScoreboardPlayers.Link = PlayerRedirects.AllName, "
-        "PlayerRedirects._pageName = Players._pageName" + (", Players._pageName = PD._pageName" if add_page_id else ""),
-        fields=", ".join(game_players_fields) + (", PD._pageID=pageId" if add_page_id else ""),
+        "PlayerRedirects._pageName = Players._pageName"
+        + (", Players._pageName = PD._pageName" if add_page_id else ""),
+        fields=", ".join(game_players_fields)
+        + (", PD._pageID=pageId" if add_page_id else ""),
         where=f"ScoreboardGames.UniqueGame = '{game['sources']['leaguepedia']['uniqueGame']}'"
         + ("AND PD._isRedirect = 0" if add_page_id else ""),
     )
