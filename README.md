@@ -5,8 +5,6 @@
 
 A parser for Leaguepedia focused on accessing esports data, which largely keeps game data in the [community-defined LoL DTO format](https://github.com/mrtolkien/lol_dto).
 
-Installation
-
 It's very minimal at the moment and focused on my own usage of Leaguepedia’s data.
 Pull requests to add features are more than welcome! (See ["Contributing"](https://github.com/mrtolkien/leaguepedia_parser#Contributing))
 
