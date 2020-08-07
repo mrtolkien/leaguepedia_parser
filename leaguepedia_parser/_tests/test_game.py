@@ -23,6 +23,7 @@ def test_tournaments():
 def test_games():
     for tournament_name in tournaments_names:
         games = leaguepedia_parser.get_games(tournament_name)
+
         assert len(games) > 0
 
 

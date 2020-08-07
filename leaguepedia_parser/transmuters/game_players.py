@@ -2,37 +2,20 @@ from typing import List, TypedDict
 from lol_dto.classes.game import LolGame
 import lol_id_tools as lit
 
-from leaguepedia_parser.logger import leaguepedia_parser_logger
-
-# TODO Add more fields?
-game_players_fields = {
-    "ScoreboardPlayers.Name=gameName",
-    "ScoreboardPlayers.Role_Number=gameRoleNumber",
-    "ScoreboardPlayers.Champion",
-    "ScoreboardPlayers.Side",
-    "Players.Name=irlName",
-    "Players.Country",
-    "Players.Birthdate",
-    # "Players.ID=currentGameName",
-    # "Players.Image",
-    # "Players.Team=currentTeam",
-    # "Players.Role=currentRole",
-    # "Players.SoloqueueIds",
-}
-
 
 role_translation = {"1": "TOP", "2": "JGL", "3": "MID", "4": "BOT", "5": "SUP"}
 
 
 class LeaguepediaPlayerIdentifier(TypedDict, total=False):
-    name: str
-    irlName: str
-    country: str
+    gameName: str  # Defined here because it’s a leaguepedia-specific field
+    name: str  # Current player name
+    irlName: str  # IRL name of the player
+    country: str  # Country of origin
     birthday: str  # YYYY-MM-DD
-    pageId: int
+    pageId: int  # Page ID on leaguepedia
 
 
-def add_players(game: LolGame, players: List[dict]) -> LolGame:
+def add_players(game: LolGame, players: List[dict], add_page_id: bool = False) -> LolGame:
     """Adds additional player information from ScoreboardPlayers.
     """
 
@@ -42,31 +25,26 @@ def add_players(game: LolGame, players: List[dict]) -> LolGame:
         for idx, game_player in enumerate(game["teams"][team_side]["players"]):
             try:
                 # We get the player object from the Leaguepedia players list
-                player = next(
+                player_latest_data = next(
                     p
                     for p in players
                     if p["Side"] == team_side_leaguepedia
                     and lit.get_id(p["Champion"], object_type="champion") == game_player["championId"]
                 )
 
-                game_player["role"] = role_translation[player["gameRoleNumber"]]
+                game_player["role"] = role_translation[player_latest_data["gameRoleNumber"]]
 
-                unique_identifiers = game_player["uniqueIdentifiers"]["leaguepedia"]
-                unique_identifiers: LeaguepediaPlayerIdentifier
+                unique_identifiers = LeaguepediaPlayerIdentifier(
+                    name=player_latest_data.get("currentGameName"),
+                    irlName=player_latest_data.get("irlName"),
+                    country=player_latest_data.get("Country"),
+                    birthday=player_latest_data.get("Birthdate"),
+                )
 
-                try:
-                    assert player["gameName"] == unique_identifiers["name"]
-                except AssertionError:
-                    leaguepedia_parser_logger.debug(
-                        f"Names not matching for player {player['gameName']}/{unique_identifiers['name']}"
-                    )
+                if add_page_id:
+                    unique_identifiers["pageId"] = int(player_latest_data["pageId"])
 
-                unique_identifiers["irlName"] = player.get("irlName")
-                unique_identifiers["country"] = player.get("Country")
-                unique_identifiers["birthday"] = player.get("Birthdate")
-
-                if player.get("pageId"):
-                    unique_identifiers["pageId"] = int(player["pageId"])
+                game_player["uniqueIdentifiers"] = {"leaguepedia": unique_identifiers}
 
             except StopIteration:
                 # Since we cannot get the role properly, we try to infer it

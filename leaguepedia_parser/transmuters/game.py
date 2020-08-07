@@ -8,43 +8,6 @@ from lol_dto.classes.game import LolGame, LolGameTeam, LolGamePlayer, LolGameTea
 from leaguepedia_parser.transmuters.game_players import LeaguepediaPlayerIdentifier
 
 
-game_fields = {
-    "Tournament",
-    "Team1",
-    "Team2",
-    "Winner",
-    "Gamelength_Number",
-    "DateTime_UTC",
-    "Team1Score",
-    "Team2Score",
-    "Team1Bans",
-    "Team2Bans",
-    "Team1Picks",
-    "Team2Picks",
-    "Team1Names",
-    "Team2Names",
-    "Team1Links",
-    "Team2Links",
-    "Team1Dragons",
-    "Team2Dragons",
-    "Team1Barons",
-    "Team2Barons",
-    "Team1Towers",
-    "Team2Towers",
-    "Team1RiftHeralds",
-    "Team2RiftHeralds",
-    "Team1Inhibitors",
-    "Team2Inhibitors",
-    "Patch",
-    "MatchHistory",
-    "VOD",
-    "Gamename",
-    "OverviewPage",
-    "ScoreboardID_Wiki",
-    "UniqueGame",
-}
-
-
 class LeaguepediaGameIdentifier(TypedDict):
     scoreboardIdWiki: str
     uniqueGame: str
@@ -63,7 +26,7 @@ def transmute_game(source_dict: dict) -> LolGame:
                 scoreboardIdWiki=source_dict["ScoreboardID Wiki"],
                 uniqueGame=source_dict["UniqueGame"],
                 matchHistoryUrl=source_dict["MatchHistory"],
-                overviewPage=source_dict["OverviewPage"]
+                overviewPage=source_dict["OverviewPage"],
             )
         },
         tournament=source_dict["Tournament"],
@@ -82,7 +45,7 @@ def transmute_game(source_dict: dict) -> LolGame:
                     LolGamePlayer(
                         uniqueIdentifiers={
                             "leaguepedia": LeaguepediaPlayerIdentifier(
-                                name=source_dict[f"Team{i}Names"].split(",")[idx]
+                                gameName=source_dict[f"Team{i}Players"].split(",")[idx]
                             )
                         },
                         championId=lit.get_id(champion_name, object_type="champion"),
