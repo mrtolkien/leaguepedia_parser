@@ -70,7 +70,7 @@ def get_tournaments(
     return [transmute_tournament(tournament) for tournament in result]
 
 
-def get_games(tournament_overview_page=None, **kwargs) -> List[LolGame]:
+def get_games(tournament_overview_page=None, datetime=None, patch=None, **kwargs) -> List[LolGame]:
     """Returns the list of games played in a tournament.
 
     Returns basic information about all games played in a tournament.
@@ -116,10 +116,28 @@ def get_games(tournament_overview_page=None, **kwargs) -> List[LolGame]:
         "UniqueGame",
     }
 
+    def build_args(conditions):
+        args = []
+        for (key, result) in conditions:
+            if key:
+                args.append(result)
+
+        return " AND ".join(args)
+
+    def build_input(key, fun):
+        if not fun: return (None, None)
+        return (fun, fun(f"ScoreboardGames.{key}"))
+    
+    args = build_args([
+        (build_input("OverviewPage", tournament_overview_page)),
+        (build_input("DateTime_UTC", datetime)),
+        (build_input("Patch", patch)),
+    ])
+
     games = leaguepedia.query(
         tables="ScoreboardGames",
         fields=", ".join(game_fields),
-        where=f"ScoreboardGames.OverviewPage ='{tournament_overview_page}'",
+        where=args,
         order_by="ScoreboardGames.DateTime_UTC",
         **kwargs,
     )
