@@ -111,6 +111,7 @@ def get_games(tournament_overview_page=None, **kwargs) -> List[LolGame]:
         "MatchHistory",
         "VOD",
         "Gamename",
+        "N_GameInMatch",
         "OverviewPage",
         "ScoreboardID_Wiki",
         "UniqueGame",
@@ -202,3 +203,6 @@ def _add_game_players(game: LolGame, add_page_id: bool) -> LolGame:
     )
 
     return add_players(game, players, add_page_id=add_page_id)
+
+##
+

@@ -20,6 +20,7 @@ def transmute_game(source_dict: dict) -> LolGame:
 
     Some fields like team gold and kills are not present. Get_game_details should be used for that.
     """
+
     game = LolGame(
         sources={
             "leaguepedia": LeaguepediaGameIdentifier(
@@ -33,7 +34,7 @@ def transmute_game(source_dict: dict) -> LolGame:
         start=datetime.fromisoformat(source_dict["DateTime UTC"])
         .replace(tzinfo=timezone.utc)
         .isoformat(timespec="seconds"),
-        gameInSeries=int(source_dict["Gamename"].replace("Game ", "")),
+        gameInSeries=int(source_dict["N GameInMatch"]),
         patch=source_dict["Patch"],
         duration=int(float(source_dict["Gamelength Number"] or 0) * 60),
         vod=source_dict["VOD"],
