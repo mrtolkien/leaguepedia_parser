@@ -2,14 +2,16 @@ import pytest
 import leaguepedia_parser
 
 
-def test_get_long_team_name():
-    assert leaguepedia_parser.get_long_team_name('tsm') == 'Team SoloMid'
-    assert leaguepedia_parser.get_long_team_name('IG') == 'Invictus Gaming'
+@pytest.mark.parametrize("team_tuple", [("tsm", "Team SoloMid"), ("IG", "Invictus Gaming")])
+def test_get_long_team_name(team_tuple):
+    assert leaguepedia_parser.get_long_team_name(team_tuple[0]) == team_tuple[1]
 
+
+def test_get_wrong_team_name():
     with pytest.raises(KeyError):
-        leaguepedia_parser.get_long_team_name('mister mv')
+        leaguepedia_parser.get_long_team_name("mister mv")
 
 
-def test_get_team_logo():
-    assert leaguepedia_parser.get_team_logo('T1')
-    assert leaguepedia_parser.get_team_logo('G2 Esports')
+@pytest.mark.parametrize("team_name", ["T1", "G2 Esports"])
+def test_get_team_logo(team_name):
+    assert leaguepedia_parser.get_team_logo(team_name)
