@@ -12,7 +12,7 @@ lol-id-tools = "*"
 lol-dto = "==0.1a1"
 
 [requires]
-python_version = "3.8"
+python_version = ">=3.8"
 
 [pipenv]
 allow_prereleases = true

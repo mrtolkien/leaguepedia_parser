@@ -4,7 +4,7 @@ import mwclient
 class LeaguepediaSite:
     """A ghost loaded class that handles Leaguepedia connection and some caching.
 
-    Full documentation: https://lol.gamepedia.com/Help:API_Documentation
+    Full documentation: https://lol.fandom.com/Help:API_Documentation
     """
 
     def __init__(self, limit=500):
@@ -28,7 +28,7 @@ class LeaguepediaSite:
         Used for ghost loading the class during package import.
         """
         # If not, we create the self.client object as our way to interact with the wiki
-        self._site = mwclient.Site("lol.gamepedia.com", path="/")
+        self._site = mwclient.Site("lol.fandom.com", path="/")
 
     def query(self, **kwargs) -> list:
         """Issues a cargo query to leaguepedia.

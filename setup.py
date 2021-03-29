@@ -7,7 +7,7 @@ with open(path.join(this_directory, "README.md"), encoding="utf-8") as f:
 
 setuptools.setup(
     name="leaguepedia_parser",
-    version="1.0.1",
+    version="1.1.0",
     python_requires='>=3.8',
     packages=[
         "leaguepedia_parser",

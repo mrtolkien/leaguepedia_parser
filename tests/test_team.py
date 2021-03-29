@@ -2,7 +2,7 @@ import pytest
 import leaguepedia_parser
 
 
-@pytest.mark.parametrize("team_tuple", [("tsm", "Team SoloMid"), ("IG", "Invictus Gaming")])
+@pytest.mark.parametrize("team_tuple", [("tsm", "TSM"), ("IG", "Invictus Gaming")])
 def test_get_long_team_name(team_tuple):
     assert leaguepedia_parser.get_long_team_name(team_tuple[0]) == team_tuple[1]
 
