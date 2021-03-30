@@ -11,7 +11,7 @@ more than welcome!
 `pip install leaguepedia_parser`
 
 # Demo
-![Demo](leaguepedia_parser_demo.gif)
+![Demo](https://raw.githubusercontent.com/mrtolkien/leaguepedia_parser/master/leaguepedia_parser_demo.gif)
 
 # Usage
 ```python
