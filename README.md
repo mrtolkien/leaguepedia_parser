@@ -33,4 +33,5 @@ game = leaguepedia_parser.get_game_details(games[0])
 logo_url = leaguepedia_parser.get_team_logo('T1')
 ```
 
-More usage examples can be found in the [`_tests` folder](https://github.com/mrtolkien/leaguepedia_parser/tree/master/leaguepedia_parser/_tests).
+More usage examples can be found in the [`_tests` folder]
+(https://github.com/mrtolkien/leaguepedia_parser/tree/master/leaguepedia_parser/_tests).

@@ -1,3 +1,0 @@
-lol-dto>=0.1a1
-lol-id-tools>=1.4.0
-mwclient==0.10.1
