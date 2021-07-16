@@ -3,11 +3,12 @@ from leaguepedia_parser.site.leaguepedia import leaguepedia
 
 
 def get_team_logo(team_name: str, _retry=True) -> str:
-    """Returns the team logo URL.
+    """
+    Returns the team logo URL
 
     Params:
-        team_name: Team name, usually gotten from the game dictionary.
-        _retry: whether or not to get the team’s full name from Leaguepedia if it was not understood.
+        team_name: Team name, usually gotten from the game dictionary
+        _retry: whether or not to get the team’s full name from Leaguepedia if it was not understood
 
     Returns:
         URL pointing to the team’s logo
@@ -37,10 +38,11 @@ def get_team_logo(team_name: str, _retry=True) -> str:
 
 
 def get_long_team_name(team_abbreviation: str) -> str:
-    """Returns the long team name for the given team abbreviation using Leaguepedia’s search pages.
+    """
+    Returns the long team name for the given team abbreviation using Leaguepedia’s search pages
 
-    Only issues a query the first time it is called, then stores the data in a cache.
-    There is no cache timeout at the moment.
+    Only issues a query the first time it is called, then stores the data in a cache
+    There is no cache timeout at the moment
 
     Args:
         team_abbreviation: A team name abbreviation, like IG or RNG
@@ -59,10 +61,11 @@ def get_long_team_name(team_abbreviation: str) -> str:
 
 
 def _load_team_name(team_abbreviation: str):
-    """Loads the full name for a given abbreviation.
+    """
+    Loads the full name for a given abbreviation
 
     Raises:
-        KeyError if no team name is found from Leaguepedia.
+        KeyError if no team name is found from Leaguepedia
     """
 
     result = leaguepedia.site.api(

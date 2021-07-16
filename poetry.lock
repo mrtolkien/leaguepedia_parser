@@ -94,6 +94,19 @@ rapidfuzz = ">=0.14"
 requests = "*"
 
 [[package]]
+name = "mwcleric"
+version = "0.6.2"
+description = "River's mwclient wrapper"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+mwclient = ">=0.10.1"
+mwparserfromhell = "*"
+pytz = "*"
+
+[[package]]
 name = "mwclient"
 version = "0.10.1"
 description = "MediaWiki API client"
@@ -104,6 +117,30 @@ python-versions = "*"
 [package.dependencies]
 requests-oauthlib = "*"
 six = "*"
+
+[[package]]
+name = "mwparserfromhell"
+version = "0.6.2"
+description = "MWParserFromHell is a parser for MediaWiki wikicode."
+category = "main"
+optional = false
+python-versions = ">= 3.5"
+
+[[package]]
+name = "mwrogue"
+version = "0.0.9"
+description = "Client for accessing Fandom/Gamepedia Esports Wikis"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+mwcleric = ">=0.6.2"
+mwclient = ">=0.10.1"
+mwparserfromhell = "*"
+python-dateutil = "*"
+pytz = "*"
+Unidecode = "*"
 
 [[package]]
 name = "oauthlib"
@@ -178,6 +215,25 @@ toml = "*"
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xmlschema"]
 
 [[package]]
+name = "python-dateutil"
+version = "2.8.2"
+description = "Extensions to the standard Python datetime module"
+category = "main"
+optional = false
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
+
+[package.dependencies]
+six = ">=1.5"
+
+[[package]]
+name = "pytz"
+version = "2021.1"
+description = "World timezone definitions, modern and historical"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "rapidfuzz"
 version = "1.4.1"
 description = "rapid fuzzy string matching"
@@ -235,6 +291,14 @@ optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
+name = "unidecode"
+version = "1.2.0"
+description = "ASCII transliterations of Unicode text"
+category = "main"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+
+[[package]]
 name = "urllib3"
 version = "1.26.6"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
@@ -250,7 +314,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "121ce8f679958ad4b281a50274a11eddce1b61dad840790b1fadca6039a71324"
+content-hash = "cbb746ebc7a5612402e55d2b298f49daacbae17ff1dc78b3e5ddb8a20936a290"
 
 [metadata.files]
 atomicwrites = [
@@ -285,9 +349,36 @@ lol-dto = []
 lol-id-tools = [
     {file = "lol_id_tools-1.7.1.tar.gz", hash = "sha256:4ab9367151022004ef712aeca74f80ab3dada626077f46f6626e6b4c8b82e409"},
 ]
+mwcleric = [
+    {file = "mwcleric-0.6.2.tar.gz", hash = "sha256:b2a79aa055cfe1f4ab113b4f111e4c37ba36ac68b476e1ba04c3850712fd0aa0"},
+]
 mwclient = [
     {file = "mwclient-0.10.1-py2.py3-none-any.whl", hash = "sha256:7aad000c4c7f239c7c92c43e2d5fbdaf8573262accd6070524ff42e46950306e"},
     {file = "mwclient-0.10.1.tar.gz", hash = "sha256:79363dd8d12f5e3b91b92b63152bf9dfef27da786c076a244e1f148c8dd67139"},
+]
+mwparserfromhell = [
+    {file = "mwparserfromhell-0.6.2-cp35-cp35m-macosx_10_14_x86_64.whl", hash = "sha256:17b9fae14dce0995b30d7832748c54e9d36e92b618419bae929fceed7d39bb9d"},
+    {file = "mwparserfromhell-0.6.2-cp35-cp35m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:465e086af36fc4c43bfe73d130f4a91e83ce8684f52ba492e233eb6f596e39e7"},
+    {file = "mwparserfromhell-0.6.2-cp36-cp36m-macosx_10_14_x86_64.whl", hash = "sha256:0c33cb431dec434f61b66b49383bc57ee5d4bba2a16ffa72671c7e7e190a0458"},
+    {file = "mwparserfromhell-0.6.2-cp36-cp36m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:ca93e64aadea6785c940bb73ec50c9b3d37efe6c5bb5ad5d9846053797134f87"},
+    {file = "mwparserfromhell-0.6.2-cp36-cp36m-win32.whl", hash = "sha256:6093fb4bc91161b8c49558d2a5fca4a7693f863194ca8541418bd9826af6d8dd"},
+    {file = "mwparserfromhell-0.6.2-cp36-cp36m-win_amd64.whl", hash = "sha256:a127ebb32f742d872acc2725070cd8059ce19418fe24e5fa3a85dc1fd02adb74"},
+    {file = "mwparserfromhell-0.6.2-cp37-cp37m-macosx_10_14_x86_64.whl", hash = "sha256:d0dc9b9cd48a1807e307d03ec758d63bb90d2a4d516366b1d2dddfa042fac8df"},
+    {file = "mwparserfromhell-0.6.2-cp37-cp37m-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:97e199f19975d67801e0bff447495a526486987c1f216a14c928323544b5f594"},
+    {file = "mwparserfromhell-0.6.2-cp37-cp37m-win32.whl", hash = "sha256:c5335d1e67017e66044e9b6334bfdff6dd70553f1fa2c16c23628c8dd8176be7"},
+    {file = "mwparserfromhell-0.6.2-cp37-cp37m-win_amd64.whl", hash = "sha256:480991c919e7658b96800dfd8f0d95da413b37c90c0368d5e1aead83baa5e85c"},
+    {file = "mwparserfromhell-0.6.2-cp38-cp38-macosx_10_14_x86_64.whl", hash = "sha256:ae6f8dc258d94e309a450936fdedd592c9d9d78f51db4606f87d6ca94822d6e4"},
+    {file = "mwparserfromhell-0.6.2-cp38-cp38-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:3167091e89cab14f8998dd26f0331ae9b7b03d46aaecde06058cb5e7bd88cca0"},
+    {file = "mwparserfromhell-0.6.2-cp38-cp38-win32.whl", hash = "sha256:e4e6578e15ec48b89c70efc06276669377d3dbf49f414626b1882bf506bd4fdb"},
+    {file = "mwparserfromhell-0.6.2-cp38-cp38-win_amd64.whl", hash = "sha256:1aae08cbb5764a43107b8d2dc4c95707b340324f41aa1ab82098a36cabcb50db"},
+    {file = "mwparserfromhell-0.6.2-cp39-cp39-macosx_10_14_x86_64.whl", hash = "sha256:3008d62d9386487ddb63d45d50de62f2e3dd7b7047d46fb205f965f2f5b0650f"},
+    {file = "mwparserfromhell-0.6.2-cp39-cp39-manylinux_2_5_x86_64.manylinux1_x86_64.whl", hash = "sha256:28e7782ab1518756e232e9a18d7f8ff68f389cf5c7812fc9fbb73cd059818a28"},
+    {file = "mwparserfromhell-0.6.2-cp39-cp39-win32.whl", hash = "sha256:7a6e37b9cfc61d2f92d6f275b15cd9a8fdd1da4ce3382062537c1f5e22f5bac5"},
+    {file = "mwparserfromhell-0.6.2-cp39-cp39-win_amd64.whl", hash = "sha256:1e797c47fec1ccc855343b91ec26586300001119ade8f444aeb87b28fc9d6645"},
+    {file = "mwparserfromhell-0.6.2.tar.gz", hash = "sha256:d3f74c0101f81ff73c61985b67f2e7048a30dc5f6a578ea1544e69133988d874"},
+]
+mwrogue = [
+    {file = "mwrogue-0.0.9.tar.gz", hash = "sha256:05f6e304599ba1ff5b14bcd3a302bd082f265c8171b789b6664ff48be3ac8332"},
 ]
 oauthlib = [
     {file = "oauthlib-3.1.1-py2.py3-none-any.whl", hash = "sha256:42bf6354c2ed8c6acb54d971fce6f88193d97297e18602a3a886603f9d7730cc"},
@@ -312,6 +403,14 @@ pyparsing = [
 pytest = [
     {file = "pytest-6.2.4-py3-none-any.whl", hash = "sha256:91ef2131a9bd6be8f76f1f08eac5c5317221d6ad1e143ae03894b862e8976890"},
     {file = "pytest-6.2.4.tar.gz", hash = "sha256:50bcad0a0b9c5a72c8e4e7c9855a3ad496ca6a881a3641b4260605450772c54b"},
+]
+python-dateutil = [
+    {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
+    {file = "python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
+]
+pytz = [
+    {file = "pytz-2021.1-py2.py3-none-any.whl", hash = "sha256:eb10ce3e7736052ed3623d49975ce333bcd712c7bb19a58b9e2089d4057d0798"},
+    {file = "pytz-2021.1.tar.gz", hash = "sha256:83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da"},
 ]
 rapidfuzz = [
     {file = "rapidfuzz-1.4.1-cp35-cp35m-macosx_10_9_x86_64.whl", hash = "sha256:72878878d6744883605b5453c382361716887e9e552f677922f76d93d622d8cb"},
@@ -392,6 +491,10 @@ six = [
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},
     {file = "toml-0.10.2.tar.gz", hash = "sha256:b3bda1d108d5dd99f4a20d24d9c348e91c4db7ab1b749200bded2f839ccbe68f"},
+]
+unidecode = [
+    {file = "Unidecode-1.2.0-py2.py3-none-any.whl", hash = "sha256:12435ef2fc4cdfd9cf1035a1db7e98b6b047fe591892e81f34e94959591fad00"},
+    {file = "Unidecode-1.2.0.tar.gz", hash = "sha256:8d73a97d387a956922344f6b74243c2c6771594659778744b2dbdaad8f6b727d"},
 ]
 urllib3 = [
     {file = "urllib3-1.26.6-py2.py3-none-any.whl", hash = "sha256:39fb8672126159acb139a7718dd10806104dec1e2f0f6c88aab05d17df10c8d4"},
