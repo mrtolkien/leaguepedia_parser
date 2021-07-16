@@ -1,4 +1,6 @@
 import json
+from typing import Optional
+
 from leaguepedia_parser.site.leaguepedia import leaguepedia
 
 
@@ -13,7 +15,7 @@ def get_team_logo(team_name: str, _retry=True) -> str:
     Returns:
         URL pointing to the team’s logo
     """
-    result = leaguepedia.site.api(
+    result = leaguepedia.site.client.api(
         action="query",
         format="json",
         prop="imageinfo",
@@ -37,7 +39,10 @@ def get_team_logo(team_name: str, _retry=True) -> str:
     return url
 
 
-def get_long_team_name(team_abbreviation: str) -> str:
+def get_long_team_name(
+    team_abbreviation: str,
+    event_overview_page: str = None,
+) -> Optional[str]:
     """
     Returns the long team name for the given team abbreviation using Leaguepedia’s search pages
 
@@ -46,6 +51,7 @@ def get_long_team_name(team_abbreviation: str) -> str:
 
     Args:
         team_abbreviation: A team name abbreviation, like IG or RNG
+        event_overview_page: The overviewPage field of the tournament, useful for disambiguation
 
     Returns:
         The long team name, like "Invictus Gaming" or "Royal Never Give Up"
@@ -54,35 +60,9 @@ def get_long_team_name(team_abbreviation: str) -> str:
     # We use only lowercase team abbreviations for simplicity
     team_abbreviation = team_abbreviation.lower()
 
-    if team_abbreviation not in leaguepedia.team_name_cache:
-        _load_team_name(team_abbreviation)
-
-    return leaguepedia.team_name_cache[team_abbreviation]
-
-
-def _load_team_name(team_abbreviation: str):
-    """
-    Loads the full name for a given abbreviation
-
-    Raises:
-        KeyError if no team name is found from Leaguepedia
-    """
-
-    result = leaguepedia.site.api(
-        "expandtemplates", prop="wikitext", text="{{JsonEncode|Team}}"
-    )
-    file = json.loads(result["expandtemplates"]["wikitext"])
-
-    if team_abbreviation not in file:
-        raise KeyError("No team name found for this abbreviation.")
-
-    value_table = file[team_abbreviation]
-
-    # To be entirely fair, I am not sure what’s going on here
-    if isinstance(value_table, str):
-        value_table = file[value_table]
-
-    try:
-        leaguepedia.team_name_cache[team_abbreviation] = value_table["long"]
-    except KeyError:
-        raise KeyError("No long name found for this team abbreviation.")
+    if event_overview_page:
+        return leaguepedia.site.cache.get_team_from_event_tricode(
+            event_overview_page, team_abbreviation
+        )
+    else:
+        return leaguepedia.site.cache.get("Team", team_abbreviation, "link")

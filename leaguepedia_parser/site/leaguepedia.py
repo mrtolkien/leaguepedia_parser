@@ -11,9 +11,6 @@ class LeaguepediaSite:
         self._site = None
         self.limit = limit
 
-        # A simple cache to save team name searches
-        self.team_name_cache = {}
-
     @property
     def site(self):
         if not self._site:
