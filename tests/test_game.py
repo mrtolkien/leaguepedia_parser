@@ -3,10 +3,14 @@ import pytest
 import leaguepedia_parser
 
 regions_names = ["China", "Europe", "Korea"]
+
 tournaments_names = [
     "LEC/2020 Season/Spring Season",
+    "LEC/2021 Season/Spring Season",
     "LCK/2020 Season/Spring Season",
+    "LCK/2021 Season/Spring Season",
     "LPL/2020 Season/Spring Season",
+    "LPL/2021 Season/Spring Season",
 ]
 
 
@@ -47,6 +51,7 @@ def test_get_details(tournament_name):
 
     for team in game.teams:
         assert len(team.players) == 5
+
         for player in team.players:
             assert hasattr(player.sources.leaguepedia, "irlName")
             assert hasattr(player.sources.leaguepedia, "birthday")

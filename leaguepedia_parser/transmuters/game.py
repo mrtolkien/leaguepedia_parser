@@ -20,12 +20,12 @@ class LeaguepediaGameIdentifier:
     matchHistoryUrl: str
     overviewPage: str
 
-    tournamentOverviewPage: str
+    tournamentName: str
 
 
 @dataclass
 class LeaguepediaTeamIdentifier:
-    name: str
+    name: str = None
 
 
 def transmute_game(source_dict: dict) -> LolGame:
@@ -54,7 +54,7 @@ def transmute_game(source_dict: dict) -> LolGame:
             uniqueGame=source_dict["UniqueGame"],
             matchHistoryUrl=source_dict["MatchHistory"],
             overviewPage=source_dict["OverviewPage"],
-            tournamentOverviewPage=source_dict["Tournament"],
+            tournamentName=source_dict["Tournament"],
         ),
     )
 
