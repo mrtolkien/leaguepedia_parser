@@ -1,4 +1,4 @@
-import mwclient
+from mwrogue.esports_client import EsportsClient
 
 
 class LeaguepediaSite:
@@ -27,7 +27,7 @@ class LeaguepediaSite:
         Used for ghost loading the class during package import.
         """
         # If not, we create the self.client object as our way to interact with the wiki
-        self._site = mwclient.Site("lol.fandom.com", path="/")
+        self._site = EsportsClient("lol")
 
     def query(self, **kwargs) -> list:
         """Issues a cargo query to leaguepedia.
@@ -43,12 +43,9 @@ class LeaguepediaSite:
         # We check if we hit the API limit
         while len(result) % self.limit == 0:
             result.extend(
-                [
-                    row["title"]
-                    for row in self.site.api(
-                        "cargoquery", limit=self.limit, offset=len(result), **kwargs
-                    )["cargoquery"]
-                ]
+                self.site.cargo_client.query(
+                    limit=self.limit, offset=len(result), **kwargs
+                )
             )
 
             # If the cargoquery is empty, we stop the loop
