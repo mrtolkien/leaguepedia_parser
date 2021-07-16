@@ -33,7 +33,6 @@ def transmute_picks_bans(input_dict) -> List[LolPickBan]:
     for field in picks_bans_fields:
         pb_list.append(
             LolPickBan(
-                championName=input_dict[field],
                 championId=lit.get_id(input_dict[field], object_type="champion"),
                 isBan="Ban" in field,
                 team="BLUE" if "Team1" in field else "RED",

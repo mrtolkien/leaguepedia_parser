@@ -10,10 +10,12 @@ repository = "https://github.com/mrtolkien/leaguepedia_parser"
 python = "^3.8"
 mwclient = "^0.10.1"
 lol-dto = {git = "https://github.com/mrtolkien/lol_dto.git", rev = "dev/2.0.0"}
+lol-id-tools = "^1.7.1"
+
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
-lol-id-tools = "^1.7.1"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

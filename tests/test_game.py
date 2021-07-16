@@ -3,7 +3,11 @@ import pytest
 import leaguepedia_parser
 
 regions_names = ["China", "Europe", "Korea"]
-tournaments_names = ["LEC/2020 Season/Spring Season", "LCK/2020 Season/Spring Season", "LPL/2020 Season/Spring Season"]
+tournaments_names = [
+    "LEC/2020 Season/Spring Season",
+    "LCK/2020 Season/Spring Season",
+    "LPL/2020 Season/Spring Season",
+]
 
 
 def test_regions():
@@ -39,11 +43,11 @@ def test_get_details(tournament_name):
     # Then test with pageId
     game = leaguepedia_parser.get_game_details(games[0], True)
 
-    assert "picksBans" in game
+    assert game.picksBans
 
-    for team in "BLUE", "RED":
-        assert len(game["teams"][team]["players"]) == 5
-        for player in game["teams"][team]["players"]:
-            assert "irlName" in player["uniqueIdentifiers"]["leaguepedia"]
-            assert "birthday" in player["uniqueIdentifiers"]["leaguepedia"]
-            assert "pageId" in player["uniqueIdentifiers"]["leaguepedia"]
+    for team in game.teams:
+        assert len(team.players) == 5
+        for player in team.players:
+            assert hasattr(player.sources.leaguepedia, "irlName")
+            assert hasattr(player.sources.leaguepedia, "birthday")
+            assert player.sources.leaguepedia.pageId

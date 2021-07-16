@@ -20,18 +20,19 @@ def get_team_logo(team_name: str, _retry=True) -> str:
         iiprop="url",
     )
 
-    # TODO Clean that up
     try:
         url = None
         pages = result.get("query").get("pages")
         for k, v in pages.items():
             url = v.get("imageinfo")[0].get("url")
+
     except (TypeError, AttributeError):
         # This happens when the team name was not properly understood.
         if _retry:
             return get_team_logo(get_long_team_name(team_name), False)
         else:
             raise Exception("Logo not found for the given team name")
+
     return url
 
 
@@ -64,7 +65,9 @@ def _load_team_name(team_abbreviation: str):
         KeyError if no team name is found from Leaguepedia.
     """
 
-    result = leaguepedia.site.api("expandtemplates", prop="wikitext", text="{{JsonEncode|Team}}")
+    result = leaguepedia.site.api(
+        "expandtemplates", prop="wikitext", text="{{JsonEncode|Team}}"
+    )
     file = json.loads(result["expandtemplates"]["wikitext"])
 
     if team_abbreviation not in file:

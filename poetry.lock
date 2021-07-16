@@ -79,13 +79,13 @@ names = ["lol-id-tools (>=1.7.1,<2.0.0)"]
 type = "git"
 url = "https://github.com/mrtolkien/lol_dto.git"
 reference = "dev/2.0.0"
-resolved_reference = "6c8441d06bbf1225790eb17611624a3e492b2df2"
+resolved_reference = "c809cba564974c47b20fd1c3c0f44c40e3a68ad8"
 
 [[package]]
 name = "lol-id-tools"
 version = "1.7.1"
 description = "An id tool for League of Legends with fuzzy string matching, nicknames, multiple locales, automatic updates, and translation."
-category = "dev"
+category = "main"
 optional = false
 python-versions = "*"
 
@@ -181,7 +181,7 @@ testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xm
 name = "rapidfuzz"
 version = "1.4.1"
 description = "rapid fuzzy string matching"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.5"
 
@@ -250,7 +250,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "445856f43c0112fc74223d536961ecc5bd908fc9e8a1f832be10cb02e408406d"
+content-hash = "121ce8f679958ad4b281a50274a11eddce1b61dad840790b1fadca6039a71324"
 
 [metadata.files]
 atomicwrites = [

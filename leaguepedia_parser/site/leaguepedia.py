@@ -12,7 +12,6 @@ class LeaguepediaSite:
         self.limit = limit
 
         # A simple cache to save team name searches
-        # TODO Handle caching with sqlite for local persistence and timeouts
         self.team_name_cache = {}
 
     @property
@@ -46,12 +45,13 @@ class LeaguepediaSite:
             result.extend(
                 [
                     row["title"]
-                    for row in self.site.api("cargoquery", limit=self.limit, offset=len(result), **kwargs)["cargoquery"]
+                    for row in self.site.api(
+                        "cargoquery", limit=self.limit, offset=len(result), **kwargs
+                    )["cargoquery"]
                 ]
             )
 
             # If the cargoquery is empty, we stop the loop
-            # TODO Find a better syntax
             if not result:
                 break
 
