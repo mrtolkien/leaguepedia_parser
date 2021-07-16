@@ -1,3 +1,6 @@
+import os
+import pickle
+
 import pytest
 
 import leaguepedia_parser
@@ -56,3 +59,14 @@ def test_get_details(tournament_name):
             assert hasattr(player.sources.leaguepedia, "irlName")
             assert hasattr(player.sources.leaguepedia, "birthday")
             assert player.sources.leaguepedia.pageId
+
+    with open(
+        os.path.join(
+            os.getcwd(),
+            "tests",
+            "exports",
+            f"{game.sources.leaguepedia.scoreboardIdWiki.replace('/', ' ')}.pkl",
+        ),
+        "wb+",
+    ) as file:
+        pickle.dump(game, file)
