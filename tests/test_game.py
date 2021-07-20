@@ -51,12 +51,13 @@ def test_games(tournament_name):
 @pytest.mark.parametrize("tournament_name", tournaments_names)
 def test_get_details(tournament_name):
     games = leaguepedia_parser.get_games(tournament_name)
+    game = games[0]
 
     # First, test without pageId
-    leaguepedia_parser.get_game_details(games[0])
+    leaguepedia_parser.get_game_details(game)
 
     # Then test with pageId
-    game = leaguepedia_parser.get_game_details(games[0], True)
+    game = leaguepedia_parser.get_game_details(game, True)
 
     assert game.picksBans
 
