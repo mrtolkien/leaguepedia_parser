@@ -27,10 +27,12 @@ def test_regions():
 def test_tournaments(region):
     tournaments = leaguepedia_parser.get_tournaments(region, year=2020)
 
-    for tournament in tournaments:
-        print(tournament.overviewPage)
-
     assert len(tournaments) > 0
+
+    for tournament in tournaments:
+        assert tournament.overviewPage
+        assert tournament.name
+        assert tournament.tournamentLevel == "Primary"
 
 
 @pytest.mark.parametrize("tournament_name", tournaments_names)
@@ -38,6 +40,12 @@ def test_games(tournament_name):
     games = leaguepedia_parser.get_games(tournament_name)
 
     assert len(games) > 0
+
+    for game in games:
+        for team in game.teams:
+            for player in team.players:
+                assert player.championId
+                assert not player.role
 
 
 @pytest.mark.parametrize("tournament_name", tournaments_names)
@@ -59,6 +67,7 @@ def test_get_details(tournament_name):
             assert hasattr(player.sources.leaguepedia, "irlName")
             assert hasattr(player.sources.leaguepedia, "birthday")
             assert player.sources.leaguepedia.pageId
+            assert player.role
 
     with open(
         os.path.join(
