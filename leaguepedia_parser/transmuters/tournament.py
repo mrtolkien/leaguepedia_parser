@@ -1,23 +1,8 @@
-from typing import TypedDict
+from dataclasses import dataclass
 
 
-# Leaguepedia name
-tournaments_fields = {
-    "Name",
-    "DateStart",
-    "Date",
-    "Region",
-    "League",
-    "Rulebook",
-    "TournamentLevel",
-    "IsQualifier",
-    "IsPlayoffs",
-    "IsOfficial",
-    "OverviewPage",
-}
-
-
-class LeaguepediaTournament(TypedDict):
+@dataclass
+class LeaguepediaTournament:
     name: str
 
     start: str  # Expressed as YYYY-MM-DD

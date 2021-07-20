@@ -5,6 +5,7 @@ from lol_dto.classes.game import LolGame
 from lol_dto.classes.game.lol_game import LolPickBan
 
 from leaguepedia_parser.site.leaguepedia import leaguepedia
+from leaguepedia_parser.transmuters.field_names import game_fields, tournaments_fields, game_players_fields
 from leaguepedia_parser.transmuters.game import transmute_game
 from leaguepedia_parser.transmuters.game_players import add_players
 from leaguepedia_parser.transmuters.picks_bans import (
@@ -13,7 +14,6 @@ from leaguepedia_parser.transmuters.picks_bans import (
 )
 from leaguepedia_parser.transmuters.tournament import (
     transmute_tournament,
-    tournaments_fields,
     LeaguepediaTournament,
 )
 
@@ -95,41 +95,6 @@ def get_games(tournament_overview_page=None, **kwargs) -> List[LolGame]:
         A list of LolGame with basic game information.
     """
 
-    game_fields = {
-        "Tournament",
-        "Team1",
-        "Team2",
-        "Winner",
-        "Gamelength_Number",
-        "DateTime_UTC",
-        "Team1Score",
-        "Team2Score",
-        "Team1Bans",
-        "Team2Bans",
-        "Team1Picks",
-        "Team2Picks",
-        "Team1Players",
-        "Team2Players",
-        "Team1Dragons",
-        "Team2Dragons",
-        "Team1Barons",
-        "Team2Barons",
-        "Team1Towers",
-        "Team2Towers",
-        "Team1RiftHeralds",
-        "Team2RiftHeralds",
-        "Team1Inhibitors",
-        "Team2Inhibitors",
-        "Patch",
-        "MatchHistory",
-        "VOD",
-        "Gamename",
-        "N_GameInMatch",
-        "OverviewPage",
-        "ScoreboardID_Wiki",
-        "UniqueGame",
-    }
-
     games = leaguepedia.query(
         tables="ScoreboardGames",
         fields=", ".join(game_fields),
@@ -187,21 +152,6 @@ def _get_picks_bans(game: LolGame) -> Optional[List[LolPickBan]]:
 
 def _add_game_players(game: LolGame, add_page_id: bool) -> LolGame:
     """Joins on PlayersRedirect to get all players information."""
-
-    game_players_fields = {
-        "ScoreboardPlayers.Name=gameName",
-        "ScoreboardPlayers.Role_Number=gameRoleNumber",
-        "ScoreboardPlayers.Champion",
-        "ScoreboardPlayers.Side",
-        "Players.Name=irlName",
-        "Players.Country",
-        "Players.Birthdate",
-        "Players.ID=currentGameName",
-        # "Players.Image",
-        # "Players.Team=currentTeam",
-        # "Players.Role=currentRole",
-        # "Players.SoloqueueIds",
-    }
 
     players = leaguepedia.query(
         tables=f"ScoreboardGames, ScoreboardPlayers, PlayerRedirects, Players, _pageData = PD",

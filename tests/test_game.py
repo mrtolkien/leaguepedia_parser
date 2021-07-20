@@ -28,7 +28,7 @@ def test_tournaments(region):
     tournaments = leaguepedia_parser.get_tournaments(region, year=2020)
 
     for tournament in tournaments:
-        print(tournament["overviewPage"])
+        print(tournament.overviewPage)
 
     assert len(tournaments) > 0
 
