@@ -5,7 +5,11 @@ from lol_dto.classes.game import LolGame
 from lol_dto.classes.game.lol_game import LolPickBan
 
 from leaguepedia_parser.site.leaguepedia import leaguepedia
-from leaguepedia_parser.transmuters.field_names import game_fields, tournaments_fields, game_players_fields
+from leaguepedia_parser.transmuters.field_names import (
+    game_fields,
+    tournaments_fields,
+    game_players_fields,
+)
 from leaguepedia_parser.transmuters.game import transmute_game
 from leaguepedia_parser.transmuters.game_players import add_players
 from leaguepedia_parser.transmuters.picks_bans import (
@@ -119,6 +123,8 @@ def get_game_details(game: LolGame, add_page_id=False) -> LolGame:
     """
     try:
         assert game.sources.leaguepedia.scoreboardIdWiki
+        assert game.sources.leaguepedia.gameId
+        assert game.sources.leaguepedia.matchId
         assert game.sources.leaguepedia.uniqueGame
     except AssertionError:
         raise ValueError(f"Leaguepedia Identifiers not present in the input object.")
@@ -138,10 +144,10 @@ def _get_picks_bans(game: LolGame) -> Optional[List[LolPickBan]]:
     # Double join as required by Leaguepedia
     picks_bans = leaguepedia.query(
         tables="PicksAndBansS7, MatchScheduleGame, ScoreboardGames",
-        join_on="PicksAndBansS7.GameID_Wiki = MatchScheduleGame.GameID_Wiki, "
-        "MatchScheduleGame.ScoreboardID_Wiki = ScoreboardGames.ScoreboardID_Wiki",
+        join_on="PicksAndBansS7.GameId = MatchScheduleGame.GameId, "
+        "MatchScheduleGame.GameId = ScoreboardGames.GameId",
         fields=", ".join(picks_bans_fields),
-        where=f"ScoreboardGames.ScoreboardID_Wiki = '{game.sources.leaguepedia.scoreboardIdWiki}'",
+        where=f"ScoreboardGames.GameId = '{game.sources.leaguepedia.gameId}'",
     )
 
     if not picks_bans:

@@ -17,6 +17,8 @@ tournaments_fields = {
 
 # Game
 game_fields = {
+    "GameId",
+    "MatchId",
     "Tournament",
     "Team1",
     "Team2",

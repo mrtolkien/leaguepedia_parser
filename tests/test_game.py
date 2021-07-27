@@ -75,7 +75,7 @@ def test_get_details(tournament_name):
             os.getcwd(),
             "tests",
             "exports",
-            f"{game.sources.leaguepedia.scoreboardIdWiki.replace('/', ' ')}.pkl",
+            f"{game.sources.leaguepedia.gameId.replace('/', ' ')}.pkl",
         ),
         "wb+",
     ) as file:
