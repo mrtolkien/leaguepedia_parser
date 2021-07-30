@@ -122,12 +122,11 @@ def get_game_details(game: LolGame, add_page_id=False) -> LolGame:
         The LolGame with all information available on Leaguepedia.
     """
     try:
-        assert game.sources.leaguepedia.scoreboardIdWiki
         assert game.sources.leaguepedia.gameId
-        assert game.sources.leaguepedia.matchId
-        assert game.sources.leaguepedia.uniqueGame
     except AssertionError:
-        raise ValueError(f"Leaguepedia Identifiers not present in the input object.")
+        raise ValueError(
+            f"Leaguepedia GameId not present in the input object, joins cannot be performed to get details"
+        )
 
     with ThreadPoolExecutor() as executor:
         picks_bans_future = executor.submit(_get_picks_bans, game)
@@ -143,9 +142,8 @@ def _get_picks_bans(game: LolGame) -> Optional[List[LolPickBan]]:
     """Returns the picks and bans for the game."""
     # Double join as required by Leaguepedia
     picks_bans = leaguepedia.query(
-        tables="PicksAndBansS7, MatchScheduleGame, ScoreboardGames",
-        join_on="PicksAndBansS7.GameId = MatchScheduleGame.GameId, "
-        "MatchScheduleGame.GameId = ScoreboardGames.GameId",
+        tables="PicksAndBansS7, ScoreboardGames",
+        join_on="PicksAndBansS7.GameId = ScoreboardGames.GameId",
         fields=", ".join(picks_bans_fields),
         where=f"ScoreboardGames.GameId = '{game.sources.leaguepedia.gameId}'",
     )
@@ -161,12 +159,12 @@ def _add_game_players(game: LolGame, add_page_id: bool) -> LolGame:
 
     players = leaguepedia.query(
         tables=f"ScoreboardGames, ScoreboardPlayers, PlayerRedirects, Players, _pageData = PD",
-        join_on="ScoreboardGames.UniqueGame = ScoreboardPlayers.UniqueGame, "
+        join_on="ScoreboardGames.GameId = ScoreboardPlayers.GameId, "
         "ScoreboardPlayers.Link = PlayerRedirects.AllName, "
         "PlayerRedirects._pageName = Players._pageName, "
         "Players._pageName = PD._pageName",
         fields=", ".join(game_players_fields) + ", PD._pageID=pageId",
-        where=f"ScoreboardGames.UniqueGame = '{game.sources.leaguepedia.uniqueGame}'AND PD._isRedirect = 0",
+        where=f"ScoreboardGames.GameId = '{game.sources.leaguepedia.gameId}'AND PD._isRedirect = 0",
     )
 
     return add_players(game, players, add_page_id=add_page_id)
