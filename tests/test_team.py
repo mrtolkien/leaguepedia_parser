@@ -24,3 +24,9 @@ def test_get_wrong_team_name():
 @pytest.mark.parametrize("team_name", ["T1", "G2 Esports"])
 def test_get_team_logo(team_name):
     assert leaguepedia_parser.get_team_logo(team_name)
+
+
+@pytest.mark.parametrize("team_name", ["T1", "G2 Esports"])
+def test_get_team_thumbnail(team_name):
+    thumbnail_url = leaguepedia_parser.get_team_thumbnail(team_name)
+    assert thumbnail_url

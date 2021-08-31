@@ -15,11 +15,39 @@ def get_team_logo(team_name: str, _retry=True) -> str:
     Returns:
         URL pointing to the team’s logo
     """
+    return get_team_asset(f"File:{team_name}logo square.png", team_name, _retry)
+
+
+def get_team_thumbnail(team_name: str, _retry=True) -> str:
+    """
+    Returns the team thumbnail URL
+
+    Params:
+        team_name: Team name, usually gotten from the game dictionary
+        _retry: whether or not to get the team’s full name from Leaguepedia if it was not understood
+
+    Returns:
+        URL pointing to the team’s thumbnail
+    """
+    return get_team_asset(f"File:{team_name}logo std.png", team_name, _retry)
+
+
+def get_team_asset(asset_name: str, team_name: str, _retry=True) -> str:
+    """
+    Returns the team thumbnail URL
+
+    Params:
+        team_name: Team name, usually gotten from the game dictionary
+        _retry: whether or not to get the team’s full name from Leaguepedia if it was not understood
+
+    Returns:
+        URL pointing to the team’s logo
+    """
     result = leaguepedia.site.client.api(
         action="query",
         format="json",
         prop="imageinfo",
-        titles=u"File:{}logo square.png".format(team_name),
+        titles=asset_name,
         iiprop="url",
     )
 
