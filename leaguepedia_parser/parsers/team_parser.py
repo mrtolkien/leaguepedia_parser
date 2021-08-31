@@ -1,7 +1,46 @@
-import json
+import dataclasses
 from typing import Optional
-
 from leaguepedia_parser.site.leaguepedia import leaguepedia
+
+
+@dataclasses.dataclass
+class TeamAssets:
+    thumbnail_url: str
+    logo_url: str
+    long_name: str  # Aka display name
+
+
+def get_all_team_assets(team_link: str) -> TeamAssets:
+    """
+
+    Args:
+        team_link: a field coming from Team1/Team2 in ScoreboardGames
+
+    Returns:
+        A TeamAssests object
+
+    """
+    result = leaguepedia.site.client.api(
+        action="query",
+        format="json",
+        prop="imageinfo",
+        titles=f"File:{team_link}logo square.png|File:{team_link}logo std.png",
+        iiprop="url",
+    )
+
+    pages = result["query"]["pages"]
+
+    urls = []
+    for v in pages.values():
+        urls.append(v["imageinfo"][0]["url"])
+
+    long_name = leaguepedia.site.cache.get("Team", team_link, "link")
+
+    return TeamAssets(
+        thumbnail_url=urls[1],
+        logo_url=urls[0],
+        long_name=long_name,
+    )
 
 
 def get_team_logo(team_name: str, _retry=True) -> str:
@@ -15,7 +54,7 @@ def get_team_logo(team_name: str, _retry=True) -> str:
     Returns:
         URL pointing to the team’s logo
     """
-    return get_team_asset(f"File:{team_name}logo square.png", team_name, _retry)
+    return _get_team_asset(f"File:{team_name}logo square.png", team_name, _retry)
 
 
 def get_team_thumbnail(team_name: str, _retry=True) -> str:
@@ -29,10 +68,10 @@ def get_team_thumbnail(team_name: str, _retry=True) -> str:
     Returns:
         URL pointing to the team’s thumbnail
     """
-    return get_team_asset(f"File:{team_name}logo std.png", team_name, _retry)
+    return _get_team_asset(f"File:{team_name}logo std.png", team_name, _retry)
 
 
-def get_team_asset(asset_name: str, team_name: str, _retry=True) -> str:
+def _get_team_asset(asset_name: str, team_name: str, _retry=True) -> str:
     """
     Returns the team thumbnail URL
 
@@ -60,14 +99,14 @@ def get_team_asset(asset_name: str, team_name: str, _retry=True) -> str:
     except (TypeError, AttributeError):
         # This happens when the team name was not properly understood.
         if _retry:
-            return get_team_logo(get_long_team_name(team_name), False)
+            return get_team_logo(get_long_team_name_from_trigram(team_name), False)
         else:
             raise Exception("Logo not found for the given team name")
 
     return url
 
 
-def get_long_team_name(
+def get_long_team_name_from_trigram(
     team_abbreviation: str,
     event_overview_page: str = None,
 ) -> Optional[str]:
@@ -92,5 +131,6 @@ def get_long_team_name(
         return leaguepedia.site.cache.get_team_from_event_tricode(
             event_overview_page, team_abbreviation
         )
+
     else:
         return leaguepedia.site.cache.get("Team", team_abbreviation, "link")
