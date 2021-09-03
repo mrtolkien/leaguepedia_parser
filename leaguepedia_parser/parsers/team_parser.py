@@ -17,7 +17,7 @@ def get_all_team_assets(team_link: str) -> TeamAssets:
         team_link: a field coming from Team1/Team2 in ScoreboardGames
 
     Returns:
-        A TeamAssests object
+        A TeamAssets object
 
     """
     result = leaguepedia.site.client.api(
