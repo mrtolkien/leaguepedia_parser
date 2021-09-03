@@ -158,13 +158,12 @@ def _add_game_players(game: LolGame, add_page_id: bool) -> LolGame:
     """Joins on PlayersRedirect to get all players information."""
 
     players = leaguepedia.query(
-        tables=f"ScoreboardGames, ScoreboardPlayers, PlayerRedirects, Players, _pageData = PD",
+        tables=f"ScoreboardGames, ScoreboardPlayers, PlayerRedirects, Players",
         join_on="ScoreboardGames.GameId = ScoreboardPlayers.GameId, "
         "ScoreboardPlayers.Link = PlayerRedirects.AllName, "
-        "PlayerRedirects._pageName = Players._pageName, "
-        "Players._pageName = PD._pageName",
-        fields=", ".join(game_players_fields) + ", PD._pageID=pageId",
-        where=f"ScoreboardGames.GameId = '{game.sources.leaguepedia.gameId}'AND PD._isRedirect = 0",
+        "PlayerRedirects.OverviewPage = Players.OverviewPage",
+        fields=", ".join(game_players_fields) + ", Players._pageID=pageId",
+        where=f"ScoreboardGames.GameId = '{game.sources.leaguepedia.gameId}'",
     )
 
     return add_players(game, players, add_page_id=add_page_id)
