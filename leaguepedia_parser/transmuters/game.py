@@ -18,8 +18,6 @@ class LeaguepediaGameIdentifier:
     gameId: str
     matchId: str
 
-    scoreboardIdWiki: str
-    uniqueGame: str
     matchHistoryUrl: str
     overviewPage: str
 
@@ -55,8 +53,6 @@ def transmute_game(source_dict: dict) -> LolGame:
         LeaguepediaGameIdentifier(
             gameId=source_dict["GameId"],
             matchId=source_dict["MatchId"],
-            scoreboardIdWiki=source_dict["ScoreboardID Wiki"],
-            uniqueGame=source_dict["UniqueGame"],
             matchHistoryUrl=source_dict["MatchHistory"],
             overviewPage=source_dict["OverviewPage"],
             tournamentName=source_dict["Tournament"],

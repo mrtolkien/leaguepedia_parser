@@ -49,8 +49,6 @@ game_fields = {
     "Gamename",
     "N_GameInMatch",
     "OverviewPage",
-    "ScoreboardID_Wiki",
-    "UniqueGame",
 }
 
 
