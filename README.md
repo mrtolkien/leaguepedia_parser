@@ -8,7 +8,14 @@ It is very minimal at the moment and focused on my own usage of Leaguepedia’s 
 more than welcome! 
 
 # Install
-`pip install leaguepedia_parser`
+
+Currently, the `1.0` versions are not working anymore due to table format changes from leaguepedia.
+
+You can install the `2.0` alpha by using:
+`pip install leaguepedia-parser==2.0.0a1`
+
+The pypi repository for releases can be found here:
+https://pypi.org/project/leaguepedia-parser/
 
 # Demo
 ![Demo](https://raw.githubusercontent.com/mrtolkien/leaguepedia_parser/master/leaguepedia_parser_demo.gif)
