@@ -1,11 +1,5 @@
-import os
-import pickle
-
 import pytest
-
 import leaguepedia_parser
-
-import tests
 
 regions_names = ["China", "Europe", "Korea"]
 
@@ -71,12 +65,3 @@ def test_get_details(tournament_name):
             assert hasattr(player.sources.leaguepedia, "birthday")
             assert player.sources.leaguepedia.pageId
             assert player.role
-
-    with open(
-        os.path.join(
-            tests.exports_folder,
-            f"{game.sources.leaguepedia.gameId.replace('/', ' ')}.pkl",
-        ),
-        "wb+",
-    ) as file:
-        pickle.dump(game, file)
