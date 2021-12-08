@@ -1,31 +1,28 @@
+# leaguepedia_parser
+
 [![Generic badge](https://img.shields.io/github/workflow/status/mrtolkien/leaguepedia_parser/Python%20application)](https://shields.io/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-# leaguepedia_parser
 A parser for Leaguepedia focused on accessing esports data.
 
 It is very minimal at the moment and focused on my own usage of Leaguepedia’s data. Pull requests to add features are
-more than welcome! 
+more than welcome!
 
-# Install
+## Install
 
-Currently, the `1.0` versions are not working anymore due to table format changes from leaguepedia.
+`pip install leaguepedia-parser`
 
-You can install the `2.0` alpha by using:
-`pip install leaguepedia-parser==2.0.0a1`
+## Demo
 
-The pypi repository for releases can be found here:
-https://pypi.org/project/leaguepedia-parser/
-
-# Demo
 ![Demo](https://raw.githubusercontent.com/mrtolkien/leaguepedia_parser/master/leaguepedia_parser_demo.gif)
 
-# Usage
+## Usage
+
 ```python
 import leaguepedia_parser
 
 # Gets regions names
-regions = leaguepedia_parser.get_regions() 
+regions = leaguepedia_parser.get_regions()
 
 # Gets tournaments in the region, by default only returns primary tournaments
 tournaments = leaguepedia_parser.get_tournaments("Korea", year=2020)
@@ -40,5 +37,4 @@ game = leaguepedia_parser.get_game_details(games[0])
 logo_url = leaguepedia_parser.get_team_logo('T1')
 ```
 
-More usage examples can be found in the [`_tests` folder]
-(https://github.com/mrtolkien/leaguepedia_parser/tree/master/leaguepedia_parser/_tests).
+More usage examples can be found in the [`_tests` folder](https://github.com/mrtolkien/leaguepedia_parser/tree/master/leaguepedia_parser/_tests).
