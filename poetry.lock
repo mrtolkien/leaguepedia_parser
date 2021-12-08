@@ -102,7 +102,7 @@ python-versions = "*"
 
 [[package]]
 name = "lol-dto"
-version = "2.0.0a4"
+version = "2.0.0"
 description = "A unified representation of League of Legends-related information"
 category = "main"
 optional = false
@@ -395,7 +395,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "3e1550aaecb8b6ae8ec31eb03a25c75f1a22751503dcbfa8a93ec414f2b89865"
+content-hash = "ed37f90c21685d606ba2efb6571c77740e362cba07be04077d0b3509c013d20d"
 
 [metadata.files]
 atomicwrites = [
@@ -435,8 +435,8 @@ iniconfig = [
     {file = "iniconfig-1.1.1.tar.gz", hash = "sha256:bc3af051d7d14b2ee5ef9969666def0cd1a000e121eaea580d4a313df4b37f32"},
 ]
 lol-dto = [
-    {file = "lol_dto-2.0.0a4-py3-none-any.whl", hash = "sha256:ff66743fc31635d78a549cd65a14d8cb10058a48f5732d0c4625a0d4c3fbf76f"},
-    {file = "lol_dto-2.0.0a4.tar.gz", hash = "sha256:5762c30c80284e52ec0290bfb91a56106df256ef594456e7aca77b9d34f512df"},
+    {file = "lol_dto-2.0.0-py3-none-any.whl", hash = "sha256:13ecb7fecf993c2790e6dbe4bb2c51512dee26daab7b5f483be78e9fc7b6ffa8"},
+    {file = "lol_dto-2.0.0.tar.gz", hash = "sha256:d7cd85eb0ee7324fba4598d34b32b7556693ab781d466ea1ec5fccd7f82a1885"},
 ]
 lol-id-tools = [
     {file = "lol_id_tools-1.7.1.tar.gz", hash = "sha256:4ab9367151022004ef712aeca74f80ab3dada626077f46f6626e6b4c8b82e409"},
