@@ -15,17 +15,18 @@ from leaguepedia_parser.transmuters.game_players import LeaguepediaPlayerIdentif
 
 @dataclass
 class LeaguepediaGameIdentifier:
-    scoreboardIdWiki: str
-    uniqueGame: str
+    gameId: str
+    matchId: str
+
     matchHistoryUrl: str
     overviewPage: str
 
-    tournamentOverviewPage: str
+    tournamentName: str
 
 
 @dataclass
 class LeaguepediaTeamIdentifier:
-    name: str
+    name: str = None
 
 
 def transmute_game(source_dict: dict) -> LolGame:
@@ -50,11 +51,11 @@ def transmute_game(source_dict: dict) -> LolGame:
         game.sources,
         "leaguepedia",
         LeaguepediaGameIdentifier(
-            scoreboardIdWiki=source_dict["ScoreboardID Wiki"],
-            uniqueGame=source_dict["UniqueGame"],
+            gameId=source_dict["GameId"],
+            matchId=source_dict["MatchId"],
             matchHistoryUrl=source_dict["MatchHistory"],
             overviewPage=source_dict["OverviewPage"],
-            tournamentOverviewPage=source_dict["Tournament"],
+            tournamentName=source_dict["Tournament"],
         ),
     )
 

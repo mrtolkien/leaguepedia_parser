@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "leaguepedia_parser"
-version = "2.0.0a0"
+version = "2.0.0a1"
 description = "A parser for Leaguepedia data"
 authors = ["Tolki <gary.mialaret@gmail.com>"]
 license = "MIT"
@@ -9,12 +9,14 @@ repository = "https://github.com/mrtolkien/leaguepedia_parser"
 [tool.poetry.dependencies]
 python = "^3.8"
 mwclient = "^0.10.1"
-lol-dto = {git = "https://github.com/mrtolkien/lol_dto.git", rev = "dev/2.0.0"}
+lol-dto = "^2.0.0a4"
 lol-id-tools = "^1.7.1"
+mwrogue = "^0.0.14"
 
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.4"
+black = {version = "^21.12b0", allow-prereleases = true}
 
 
 [build-system]

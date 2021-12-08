@@ -5,6 +5,11 @@ from lol_dto.classes.game import LolGame
 from lol_dto.classes.game.lol_game import LolPickBan
 
 from leaguepedia_parser.site.leaguepedia import leaguepedia
+from leaguepedia_parser.transmuters.field_names import (
+    game_fields,
+    tournaments_fields,
+    game_players_fields,
+)
 from leaguepedia_parser.transmuters.game import transmute_game
 from leaguepedia_parser.transmuters.game_players import add_players
 from leaguepedia_parser.transmuters.picks_bans import (
@@ -13,7 +18,6 @@ from leaguepedia_parser.transmuters.picks_bans import (
 )
 from leaguepedia_parser.transmuters.tournament import (
     transmute_tournament,
-    tournaments_fields,
     LeaguepediaTournament,
 )
 
@@ -95,41 +99,6 @@ def get_games(tournament_overview_page=None, **kwargs) -> List[LolGame]:
         A list of LolGame with basic game information.
     """
 
-    game_fields = {
-        "Tournament",
-        "Team1",
-        "Team2",
-        "Winner",
-        "Gamelength_Number",
-        "DateTime_UTC",
-        "Team1Score",
-        "Team2Score",
-        "Team1Bans",
-        "Team2Bans",
-        "Team1Picks",
-        "Team2Picks",
-        "Team1Players",
-        "Team2Players",
-        "Team1Dragons",
-        "Team2Dragons",
-        "Team1Barons",
-        "Team2Barons",
-        "Team1Towers",
-        "Team2Towers",
-        "Team1RiftHeralds",
-        "Team2RiftHeralds",
-        "Team1Inhibitors",
-        "Team2Inhibitors",
-        "Patch",
-        "MatchHistory",
-        "VOD",
-        "Gamename",
-        "N_GameInMatch",
-        "OverviewPage",
-        "ScoreboardID_Wiki",
-        "UniqueGame",
-    }
-
     games = leaguepedia.query(
         tables="ScoreboardGames",
         fields=", ".join(game_fields),
@@ -153,10 +122,11 @@ def get_game_details(game: LolGame, add_page_id=False) -> LolGame:
         The LolGame with all information available on Leaguepedia.
     """
     try:
-        assert game.sources.leaguepedia.scoreboardIdWiki
-        assert game.sources.leaguepedia.uniqueGame
+        assert game.sources.leaguepedia.gameId
     except AssertionError:
-        raise ValueError(f"Leaguepedia Identifiers not present in the input object.")
+        raise ValueError(
+            f"Leaguepedia GameId not present in the input object, joins cannot be performed to get details"
+        )
 
     with ThreadPoolExecutor() as executor:
         picks_bans_future = executor.submit(_get_picks_bans, game)
@@ -172,11 +142,10 @@ def _get_picks_bans(game: LolGame) -> Optional[List[LolPickBan]]:
     """Returns the picks and bans for the game."""
     # Double join as required by Leaguepedia
     picks_bans = leaguepedia.query(
-        tables="PicksAndBansS7, MatchScheduleGame, ScoreboardGames",
-        join_on="PicksAndBansS7.GameID_Wiki = MatchScheduleGame.GameID_Wiki, "
-        "MatchScheduleGame.ScoreboardID_Wiki = ScoreboardGames.ScoreboardID_Wiki",
+        tables="PicksAndBansS7, ScoreboardGames",
+        join_on="PicksAndBansS7.GameId = ScoreboardGames.GameId",
         fields=", ".join(picks_bans_fields),
-        where=f"ScoreboardGames.ScoreboardID_Wiki = '{game.sources.leaguepedia.scoreboardIdWiki}'",
+        where=f"ScoreboardGames.GameId = '{game.sources.leaguepedia.gameId}'",
     )
 
     if not picks_bans:
@@ -188,29 +157,13 @@ def _get_picks_bans(game: LolGame) -> Optional[List[LolPickBan]]:
 def _add_game_players(game: LolGame, add_page_id: bool) -> LolGame:
     """Joins on PlayersRedirect to get all players information."""
 
-    game_players_fields = {
-        "ScoreboardPlayers.Name=gameName",
-        "ScoreboardPlayers.Role_Number=gameRoleNumber",
-        "ScoreboardPlayers.Champion",
-        "ScoreboardPlayers.Side",
-        "Players.Name=irlName",
-        "Players.Country",
-        "Players.Birthdate",
-        "Players.ID=currentGameName",
-        # "Players.Image",
-        # "Players.Team=currentTeam",
-        # "Players.Role=currentRole",
-        # "Players.SoloqueueIds",
-    }
-
     players = leaguepedia.query(
-        tables=f"ScoreboardGames, ScoreboardPlayers, PlayerRedirects, Players, _pageData = PD",
-        join_on="ScoreboardGames.UniqueGame = ScoreboardPlayers.UniqueGame, "
+        tables=f"ScoreboardGames, ScoreboardPlayers, PlayerRedirects, Players",
+        join_on="ScoreboardGames.GameId = ScoreboardPlayers.GameId, "
         "ScoreboardPlayers.Link = PlayerRedirects.AllName, "
-        "PlayerRedirects._pageName = Players._pageName, "
-        "Players._pageName = PD._pageName",
-        fields=", ".join(game_players_fields) + ", PD._pageID=pageId",
-        where=f"ScoreboardGames.UniqueGame = '{game.sources.leaguepedia.uniqueGame}'AND PD._isRedirect = 0",
+        "PlayerRedirects.OverviewPage = Players.OverviewPage",
+        fields=", ".join(game_players_fields) + ", Players._pageID=pageId",
+        where=f"ScoreboardGames.GameId = '{game.sources.leaguepedia.gameId}'",
     )
 
     return add_players(game, players, add_page_id=add_page_id)
