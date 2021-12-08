@@ -1,1 +1,1 @@
-# Leaving the init for github packaging tests
+from tests.conftest import exports_folder

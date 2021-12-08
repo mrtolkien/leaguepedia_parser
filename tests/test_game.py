@@ -5,6 +5,8 @@ import pytest
 
 import leaguepedia_parser
 
+import tests
+
 regions_names = ["China", "Europe", "Korea"]
 
 tournaments_names = [
@@ -72,9 +74,7 @@ def test_get_details(tournament_name):
 
     with open(
         os.path.join(
-            os.getcwd(),
-            "tests",
-            "exports",
+            tests.exports_folder,
             f"{game.sources.leaguepedia.gameId.replace('/', ' ')}.pkl",
         ),
         "wb+",
