@@ -95,20 +95,22 @@ def transmute_game(source_dict: dict) -> LolGame:
             LeaguepediaTeamIdentifier(name=source_dict[f"Team{idx}"]),
         )
 
-    # For Riot API games, I directly parse the URL for the game to have its actual identifiers.
-    if "gameHash" in source_dict["MatchHistory"]:
-        parsed_url = urllib.parse.urlparse(
-            urllib.parse.urlparse(source_dict["MatchHistory"]).fragment
-        )
+    # Riot Portal for Match History was turned off on September 7: https://www.leagueoflegends.com/en-us/news/game-updates/turning-off-web-match-history/#match-details/ESPORTSTMNT01/1302595?gameHash=314d39ea940b354f
+    if source_dict["MatchHistory"] != None:
+        # For Riot API games, I directly parse the URL for the game to have its actual identifiers.
+        if "gameHash" in source_dict["MatchHistory"]:
+            parsed_url = urllib.parse.urlparse(
+                urllib.parse.urlparse(source_dict["MatchHistory"]).fragment
+            )
 
-        query = urllib.parse.parse_qs(parsed_url.query)
-        platform_id, game_id = parsed_url.path.split("/")[1:]
-        game_hash = query["gameHash"][0]
+            query = urllib.parse.parse_qs(parsed_url.query)
+            platform_id, game_id = parsed_url.path.split("/")[1:]
+            game_hash = query["gameHash"][0]
 
-        setattr(
-            game.sources,
-            "riotLolApi",
-            RiotGameSource(gameId=game_id, platformId=platform_id, gameHash=game_hash),
-        )
+            setattr(
+                game.sources,
+                "riotLolApi",
+                RiotGameSource(gameId=game_id, platformId=platform_id, gameHash=game_hash),
+            )
 
     return game
