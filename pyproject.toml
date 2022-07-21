@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "leaguepedia_parser"
-version = "2.0.0"
+version = "2.0.1"
 description = "A parser for Leaguepedia data"
 authors = ["Tolki <gary.mialaret@gmail.com>"]
 license = "MIT"
