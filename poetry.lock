@@ -158,15 +158,15 @@ python-versions = ">= 3.5"
 
 [[package]]
 name = "mwrogue"
-version = "0.0.14"
+version = "0.1.5"
 description = "Client for accessing Fandom/Gamepedia Esports Wikis"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 
 [package.dependencies]
-mwcleric = ">=0.6.2"
-mwclient = ">=0.10.1"
+mwcleric = "*"
+mwclient = "*"
 mwparserfromhell = "*"
 python-dateutil = "*"
 pytz = "*"
@@ -221,8 +221,8 @@ optional = false
 python-versions = ">=3.6"
 
 [package.extras]
-docs = ["Sphinx (>=4)", "furo (>=2021.7.5b38)", "proselint (>=0.10.2)", "sphinx-autodoc-typehints (>=1.12)"]
-test = ["appdirs (==1.4.4)", "pytest (>=6)", "pytest-cov (>=2.7)", "pytest-mock (>=3.6)"]
+test = ["pytest-mock (>=3.6)", "pytest-cov (>=2.7)", "pytest (>=6)", "appdirs (==1.4.4)"]
+docs = ["sphinx-autodoc-typehints (>=1.12)", "proselint (>=0.10.2)", "furo (>=2021.7.5b38)", "Sphinx (>=4)"]
 
 [[package]]
 name = "pluggy"
@@ -233,8 +233,8 @@ optional = false
 python-versions = ">=3.6"
 
 [package.extras]
-dev = ["pre-commit", "tox"]
-testing = ["pytest", "pytest-benchmark"]
+testing = ["pytest-benchmark", "pytest"]
+dev = ["tox", "pre-commit"]
 
 [[package]]
 name = "py"
@@ -395,7 +395,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "ed37f90c21685d606ba2efb6571c77740e362cba07be04077d0b3509c013d20d"
+content-hash = "ebdd6951d31b85a3b619ab614eb08a66f1e16bf0834e48dd3424d71c77f14de1"
 
 [metadata.files]
 atomicwrites = [
@@ -474,7 +474,7 @@ mwparserfromhell = [
     {file = "mwparserfromhell-0.6.3.tar.gz", hash = "sha256:1ad779f1bc0808d280ec1026c9de74f424de535568e21debd12830b5b0fa097e"},
 ]
 mwrogue = [
-    {file = "mwrogue-0.0.14.tar.gz", hash = "sha256:71bab5102d65e02726fd6ae1f8904b2542287a5dcb7f7032d4466c325480efc5"},
+    {file = "mwrogue-0.1.5.tar.gz", hash = "sha256:ebe4d6c94315e40ea026be13cc5b6ebee2089f36f08e46c119455d836bd4a455"},
 ]
 mypy-extensions = [
     {file = "mypy_extensions-0.4.3-py2.py3-none-any.whl", hash = "sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d"},
