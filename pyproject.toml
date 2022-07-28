@@ -10,7 +10,7 @@ repository = "https://github.com/mrtolkien/leaguepedia_parser"
 python = "^3.8"
 mwclient = "^0.10.1"
 lol-dto = "^2.0.0"
-lol-id-tools = "^1.7.1"
+lol-id-tools = "^2.0.0"
 mwrogue = "^0.1.0"
 
 
