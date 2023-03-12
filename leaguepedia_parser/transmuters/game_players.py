@@ -51,6 +51,7 @@ def add_players(
                 irlName=player_latest_data.get("irlName"),
                 country=player_latest_data.get("Country"),
                 birthday=player_latest_data.get("Birthdate"),
+                pageId=player_latest_data.get("pageId"),
             )
 
             if add_page_id:
