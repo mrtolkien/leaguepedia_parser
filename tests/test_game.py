@@ -10,6 +10,7 @@ tournaments_names = [
     "LCK/2021 Season/Spring Season",
     "LPL/2020 Season/Spring Season",
     "LPL/2021 Season/Spring Season",
+    "2023 Mid-Season Invitational"
 ]
 
 
