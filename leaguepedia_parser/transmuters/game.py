@@ -110,5 +110,14 @@ def transmute_game(source_dict: dict) -> LolGame:
             "riotLolApi",
             RiotGameSource(gameId=game_id, platformId=platform_id, gameHash=game_hash),
         )
+    # For new tournaments, where the ID is directly input in the wiki instead of the match history URL.
+    elif not source_dict.get("MatchHistory") and source_dict.get("RiotPlatformGameId"):
+        platform_id, game_id = source_dict["RiotPlatformGameId"].split("_")
+
+        setattr(
+            game.sources,
+            "riotLolApi",
+            RiotGameSource(gameId=game_id, platformId=platform_id),
+        )
 
     return game

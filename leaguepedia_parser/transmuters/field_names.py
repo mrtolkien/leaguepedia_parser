@@ -45,6 +45,7 @@ game_fields = {
     "Team2Inhibitors",
     "Patch",
     "MatchHistory",
+    "RiotPlatformGameId",
     "VOD",
     "Gamename",
     "N_GameInMatch",
