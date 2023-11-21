@@ -3,6 +3,7 @@ from leaguepedia_parser.parsers.game_parser import (
     get_tournaments,
     get_games,
     get_game_details,
+    get_game_data_and_timeline
 )
 from leaguepedia_parser.parsers.team_parser import (
     get_team_logo,

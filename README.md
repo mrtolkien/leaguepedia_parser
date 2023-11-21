@@ -35,6 +35,9 @@ game = leaguepedia_parser.get_game_details(games[0])
 
 # Gets the URL of the team’s logo
 logo_url = leaguepedia_parser.get_team_logo('T1')
+
+# Get end-of-game and timeline JSON data
+data, timeline = leaguepedia.get_game_data_and_timeline(game)
 ```
 
 More usage examples can be found in the [`tests` folder](https://github.com/mrtolkien/leaguepedia_parser/tree/master/tests).

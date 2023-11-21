@@ -50,6 +50,23 @@ class LeaguepediaSite:
                 break
 
         return result
+    
+    def get_game_json(self, riot_platform_game_id: str):
+        """Gets end-of-game and timeline JSON data for given game.
+        
+        Params:
+            riot_platform_game_id: PlatformId + "_" + GameId
+        
+        Returns:
+            tuple containing 2 dicts: end-of-game data, timeline data
+        """
+        try:
+            data, timeline = self._site.get_data_and_timeline(riot_platform_game_id,
+                                                              version=5)  # try to get V5 data, returns two values, the data and timeline json
+        except KeyError:
+            data, timeline = self._site.get_data_and_timeline(riot_platform_game_id,
+                                                              version=4)  # if it fails try getting V4 data
+        return data, timeline
 
 
 # Ghost loaded instance shared by all other classes

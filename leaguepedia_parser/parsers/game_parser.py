@@ -1,5 +1,5 @@
 from concurrent.futures.thread import ThreadPoolExecutor
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from lol_dto.classes.game import LolGame
 from lol_dto.classes.game.lol_game import LolPickBan
@@ -136,6 +136,26 @@ def get_game_details(game: LolGame, add_page_id=False) -> LolGame:
     game.picksBans = picks_bans_future.result()
 
     return game
+
+
+def get_game_data_and_timeline(game: LolGame) -> Tuple[Optional[dict], Optional[dict]]:
+    """Returns end-of-game and timeline JSON data from Leaguepedia if it exists.
+
+    Example of data format: 
+        timeline data - https://lol.fandom.com/wiki/V4_data:BR1_1926164473/Timeline
+        end-of-game data - https://lol.fandom.com/wiki/V4_data:BR1_1926164473
+
+    You can use riot_transmute to convert the dicts into a single LolGame dataclass:
+        import riot_transmute
+        game_data, game_timeline = leaguepedia.get_game_data_and_timeline(lol_game)
+        game = riot_transmute.match_to_game(game_data, match_v5=match_v5)
+        timeline = riot_transmute.match_timeline_to_game(game_timeline, game_id, platform_id, match_v5=match_v5)
+        merged_game = riot_transmute.merge_games_from_riot_match_and_timeline(game, timeline)
+    """
+    if hasattr(game, 'sources') and hasattr(game.sources, 'riotLolApi'):
+        game_id = game.sources.riotLolApi.platformId + "_" + game.sources.riotLolApi.gameId
+        return leaguepedia.get_game_json(game_id)
+    return None, None
 
 
 def _get_picks_bans(game: LolGame) -> Optional[List[LolPickBan]]:
